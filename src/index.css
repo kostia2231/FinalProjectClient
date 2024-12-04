@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer base {
+  :root {
+    --primary: rgba(0, 149, 246, 1);
+    --radius-sm: 0, 5rem;
+    --radius: 1rem;
+    --radius-lg: 1, 5rem;
+  }
+}
