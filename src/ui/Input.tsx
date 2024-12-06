@@ -1,78 +1,69 @@
 import clsx from "clsx";
-import { forwardRef, ChangeEvent } from "react";
+import {
+  forwardRef,
+  ChangeEvent,
+  TextareaHTMLAttributes,
+  InputHTMLAttributes,
+  Ref,
+} from "react";
 
 type InputVariant = "primary" | "secondary" | "error";
-type InputType = "text" | "textarea" | "number" | "password";
 
-interface InputProps {
-  variant: InputVariant;
-  type: InputType;
-  value: string | number;
-  placeholder?: string;
-  style?: React.CSSProperties;
-  name?: string;
-  required?: boolean;
+interface BaseProps {
+  variant?: InputVariant;
   onChange?: (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   onBlur?: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
-const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
-  (
-    {
-      variant,
-      type,
-      value,
-      onChange,
-      onBlur,
-      placeholder,
-      style,
-      name,
-      required,
-    },
-    ref
-  ) => {
+type InputSpecificProps = InputHTMLAttributes<HTMLInputElement> & {
+  type?: "text" | "email" | "password";
+};
+
+type TextareaSpecificProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  type?: "textarea";
+};
+
+type InputProps = BaseProps & (InputSpecificProps | TextareaSpecificProps);
+
+const Input = forwardRef<HTMLTextAreaElement | HTMLInputElement, InputProps>(
+  ({ variant = "primary", type = "text", onChange, onBlur, ...props }, ref) => {
     const styles = {
-      primary: "",
-      secondary: "",
+      primary: "border-gray-300",
+      secondary: "border-blue-300",
       error: "border-red-300",
     };
 
     const inputClass = clsx(
       styles[variant],
-      "px-2 py-3 rounded border placeholder:text-xs w-[100%] text-xs"
+      "px-2 py-3 rounded border placeholder:text-xs w-full text-xs"
     );
 
-    return type === "textarea" ? (
-      <textarea
-        ref={ref as React.Ref<HTMLTextAreaElement>}
-        className={inputClass}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        style={style}
-        placeholder={placeholder}
-        name={name}
-        required={required}
-      />
-    ) : (
+    if (type === "textarea") {
+      return (
+        <textarea
+          ref={ref as Ref<HTMLTextAreaElement>}
+          className={inputClass}
+          onChange={onChange}
+          onBlur={onBlur}
+          {...(props as TextareaHTMLAttributes<HTMLTextAreaElement>)}
+        />
+      );
+    }
+
+    return (
       <input
-        ref={ref as React.Ref<HTMLInputElement>}
+        ref={ref as Ref<HTMLInputElement>}
         className={inputClass}
-        value={value}
+        type={type}
         onChange={onChange}
         onBlur={onBlur}
-        style={style}
-        placeholder={placeholder}
-        name={name}
-        required={required}
-        type={type}
+        {...(props as InputHTMLAttributes<HTMLInputElement>)}
       />
     );
   }
 );
 
 Input.displayName = "Input";
-
 export default Input;
