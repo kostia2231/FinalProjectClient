@@ -1,8 +1,8 @@
 import clsx from "clsx";
-import React, { FC, forwardRef, ChangeEvent } from "react";
+import { forwardRef, ChangeEvent } from "react";
 
-type InputVariant = "primary" | "secondary";
-type InputType = "text" | "textarea" | "number";
+type InputVariant = "primary" | "secondary" | "error";
+type InputType = "text" | "textarea" | "number" | "password";
 
 interface InputProps {
   variant: InputVariant;
@@ -10,54 +10,69 @@ interface InputProps {
   value: string | number;
   placeholder?: string;
   style?: React.CSSProperties;
-  children?: React.ReactNode;
+  name?: string;
+  required?: boolean;
   onChange?: (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void; // Обработчик изменения для input и textarea
+  ) => void;
+  onBlur?: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
-// forwardRef:
 const Input = forwardRef<HTMLInputElement | HTMLTextAreaElement, InputProps>(
-  ({ variant, type, value, onChange, placeholder, style, children }, ref) => {
-    // Пример стилей для классов
+  (
+    {
+      variant,
+      type,
+      value,
+      onChange,
+      onBlur,
+      placeholder,
+      style,
+      name,
+      required,
+    },
+    ref
+  ) => {
     const styles = {
-      primary: "primary-class",
-      secondary: "secondary-class",
+      primary: "",
+      secondary: "",
+      error: "border-red-300",
     };
 
-    // Применяем классы стилей в зависимости от варианта
-    const inputClass = clsx(styles[variant]);
+    const inputClass = clsx(
+      styles[variant],
+      "px-2 py-3 rounded border placeholder:text-xs w-[100%] text-xs"
+    );
 
-    if (type === "textarea") {
-      return (
-        <textarea
-          ref={ref as React.Ref<HTMLTextAreaElement>}
-          className={inputClass}
-          value={value}
-          onChange={onChange}
-          style={style}
-          placeholder={placeholder}
-          required
-        >
-          {children}
-        </textarea>
-      );
-    }
-
-    return (
+    return type === "textarea" ? (
+      <textarea
+        ref={ref as React.Ref<HTMLTextAreaElement>}
+        className={inputClass}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        style={style}
+        placeholder={placeholder}
+        name={name}
+        required={required}
+      />
+    ) : (
       <input
         ref={ref as React.Ref<HTMLInputElement>}
         className={inputClass}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
         style={style}
         placeholder={placeholder}
-        required
-      >
-        {children}
-      </input>
+        name={name}
+        required={required}
+        type={type}
+      />
     );
   }
 );
+
+Input.displayName = "Input";
 
 export default Input;
