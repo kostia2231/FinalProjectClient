@@ -10,9 +10,10 @@ import {
 type InputVariant = "primary" | "secondary" | "error";
 
 interface BaseProps {
+  className?: string;
   variant?: InputVariant;
   onChange?: (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => void;
   onBlur?: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
@@ -37,7 +38,7 @@ const Input = forwardRef<HTMLTextAreaElement | HTMLInputElement, InputProps>(
 
     const inputClass = clsx(
       styles[variant],
-      "px-2 py-3 rounded border placeholder:text-xs w-full text-xs"
+      "px-2 py-3 rounded border placeholder:text-xs w-full text-xs",
     );
 
     if (type === "textarea") {
@@ -62,7 +63,7 @@ const Input = forwardRef<HTMLTextAreaElement | HTMLInputElement, InputProps>(
         {...(props as InputHTMLAttributes<HTMLInputElement>)}
       />
     );
-  }
+  },
 );
 
 Input.displayName = "Input";

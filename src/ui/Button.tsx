@@ -4,12 +4,16 @@ import { forwardRef, ButtonHTMLAttributes } from "react";
 type ButtonVariant = "primary" | "secondary" | "icon";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant: ButtonVariant;
+  variant?: ButtonVariant;
   icon?: React.ReactNode;
+  className?: string;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ type = "button", variant, children, onClick, icon, ...props }, ref) => {
+  (
+    { type = "button", variant = "primary", children, onClick, icon, ...props },
+    ref
+  ) => {
     const styles = {
       primary:
         "bg-blue-500 hover:bg-blue-400 active:bg-blue-300  text-white rounded-xl p-2",

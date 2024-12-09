@@ -1,9 +1,10 @@
 import Input from "../../ui/Input";
 import Button from "../../ui/Button";
+import ErrorMessage from "../../ui/ErrorMessage";
 import { useFormik } from "formik";
 import { loginSchema } from "../../schemas/index";
 
-const FormLogin = () => {
+const FormLogIn = () => {
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: {
@@ -34,6 +35,9 @@ const FormLogin = () => {
             type="text"
             placeholder="Username or email"
           ></Input>
+          {errors.username && touched.username ? (
+            <ErrorMessage>{errors.username}</ErrorMessage>
+          ) : null}
           <Input
             name="password"
             value={values.password}
@@ -43,13 +47,14 @@ const FormLogin = () => {
             type="password"
             placeholder="Password"
           ></Input>
+          {errors.password && touched.password ? (
+            <ErrorMessage>{errors.password}</ErrorMessage>
+          ) : null}
         </div>
-        <Button type="submit" variant="primary">
-          Log in
-        </Button>
+        <Button type="submit">Log in</Button>
       </form>
     </>
   );
 };
 
-export default FormLogin;
+export default FormLogIn;
