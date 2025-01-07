@@ -1,48 +1,31 @@
 import {
-  Outlet,
   RouterProvider,
-  Link,
   createRouter,
   createRoute,
   createRootRoute,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
-import LogIn from "./pages/logIn";
+import LogIn from "./pages/login";
 import SignIn from "./pages/signIn";
+import Menu from "./components/menu";
+import Main from "./pages/main";
+import Search from "./pages/search";
 
 //root router
 const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <div className="p-2 flex gap-2">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>
-        <Link to="/login" className="[&.active]:font-bold">
-          Log In
-        </Link>
-        <Link to="/signin" className="[&.active]:font-bold">
-          Sign In
-        </Link>
-      </div>
-      <hr />
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
-  ),
+  component: Menu,
 });
 
 //routes
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
-  component: function Index() {
-    return (
-      <div className="p-2">
-        <h3>ICHGRAM</h3>
-      </div>
-    );
-  },
+  component: Main,
+});
+
+const searchRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/search",
+  component: Search,
 });
 
 const logInRoute = createRoute({
@@ -59,7 +42,12 @@ const signInRoute = createRoute({
 
 //router
 const router = createRouter({
-  routeTree: rootRoute.addChildren([indexRoute, logInRoute, signInRoute]),
+  routeTree: rootRoute.addChildren([
+    indexRoute,
+    logInRoute,
+    signInRoute,
+    searchRoute,
+  ]),
 });
 
 declare module "@tanstack/react-router" {
