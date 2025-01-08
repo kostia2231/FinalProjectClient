@@ -32,10 +32,10 @@ const Input = forwardRef<HTMLTextAreaElement | HTMLInputElement, InputProps>(
   ({ variant = "primary", type = "text", onChange, onBlur, ...props }, ref) => {
     const styles = {
       primary:
-        "placeholder:font-light placeholder:text-sm border rounded py-4 px-3 bg-gray-50",
+        "placeholder:font-light placeholder:text-sm border rounded py-3 px-3 bg-gray-50 text-sm",
       secondary: "border-blue-300",
       error:
-        "placeholder:font-light placeholder:text-sm border rounded py-4 px-3 bg-red-50 border-red-100",
+        "placeholder:font-light placeholder:text-sm border rounded py-3 px-3 bg-red-50 border-red-100 text-sm",
     };
 
     const inputClass = clsx(

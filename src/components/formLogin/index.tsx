@@ -25,7 +25,7 @@ const FormLogIn = () => {
         onSubmit={handleSubmit}
         className="flex flex-col w-full gap-4"
       >
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2">
           <Input
             name="username"
             value={values.username}
