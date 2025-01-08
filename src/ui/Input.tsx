@@ -31,9 +31,11 @@ type InputProps = BaseProps & (InputSpecificProps | TextareaSpecificProps);
 const Input = forwardRef<HTMLTextAreaElement | HTMLInputElement, InputProps>(
   ({ variant = "primary", type = "text", onChange, onBlur, ...props }, ref) => {
     const styles = {
-      primary: "border-gray-300",
+      primary:
+        "placeholder:font-light placeholder:text-sm border rounded py-4 px-3 bg-gray-50",
       secondary: "border-blue-300",
-      error: "border-red-300",
+      error:
+        "placeholder:font-light placeholder:text-sm border rounded py-4 px-3 bg-red-50 border-red-100",
     };
 
     const inputClass = clsx(

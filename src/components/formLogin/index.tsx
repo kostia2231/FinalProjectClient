@@ -51,7 +51,9 @@ const FormLogIn = () => {
             <ErrorMessage>{errors.password}</ErrorMessage>
           ) : null}
         </div>
-        <Button type="submit">Log in</Button>
+        <Button variant="primary" type="submit">
+          Log in
+        </Button>
       </form>
     </>
   );

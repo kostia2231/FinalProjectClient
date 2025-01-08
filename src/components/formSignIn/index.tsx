@@ -23,6 +23,9 @@ const FormSignIn = () => {
   return (
     <>
       <>
+        <div className="text-center pb-9">
+          Sign up to see photos and videos from your friends.
+        </div>
         <form
           autoComplete="off"
           onSubmit={handleSubmit}

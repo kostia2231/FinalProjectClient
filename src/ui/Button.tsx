@@ -12,11 +12,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     { type = "button", variant = "primary", children, onClick, icon, ...props },
-    ref
+    ref,
   ) => {
     const styles = {
       primary:
-        "bg-blue-500 hover:bg-blue-400 active:bg-blue-300  text-white rounded-xl p-2",
+        "bg-blue-500 hover:bg-blue-400 active:bg-blue-300  text-white rounded-xl p-2 font-semibold",
       secondary: "bg-transparent text-black p-2",
       icon: "h-10 w-10 bg-green-500",
     };
@@ -34,7 +34,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {icon ? <span>{icon}</span> : children}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";
