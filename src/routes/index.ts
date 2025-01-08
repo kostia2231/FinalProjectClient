@@ -63,7 +63,7 @@ const profileRoute = createRoute({
 //routes without menu
 const logInRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/login",
+  path: "login",
   component: LogIn,
 });
 
