@@ -53,7 +53,7 @@ const Menu = () => {
           <TanStackRouterDevtools />
         </div>
       </div>
-      <div className="flex ml-[20%] pt-3 px-3">
+      <div className="flex ml-[20%] pt-3 px-3 w-full">
         <Outlet />
       </div>
     </div>

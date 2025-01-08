@@ -16,7 +16,7 @@ const MenuItem: FC<MenuItemP> = ({ icon, name, path }) => {
       <div className="flex gap-4 h-auto rounded-lg  cursor-pointer hover:bg-gray-100 p-3 justify-start items-start">
         <div>{icon}</div>
         <p
-          className={`text-[1rem] font-normal ${path === pathname ? "font-bold" : "font-normal"}`}
+          className={`text-[1rem] ${path === pathname ? "font-bold" : "font-normal"}`}
         >
           {name}
         </p>

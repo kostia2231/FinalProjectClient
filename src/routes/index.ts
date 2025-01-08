@@ -13,48 +13,54 @@ import Messages from "../pages/messages";
 import Notification from "../pages/notification";
 import Profile from "../pages/profile";
 
-//root router
-const rootRoute = createRootRoute({
+//shared root
+const rootRoute = createRootRoute();
+
+//routes with menu
+const menuRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "menu",
   component: Menu,
 });
 
-//routes
+//routes in the menu layout
 const indexRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => menuRoute,
   path: "/",
   component: Main,
 });
 
 const searchRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/search",
+  getParentRoute: () => menuRoute,
+  path: "search",
   component: Search,
 });
 
 const exploreRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/explore",
+  getParentRoute: () => menuRoute,
+  path: "explore",
   component: Explore,
 });
 
 const messagesRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/messages",
+  getParentRoute: () => menuRoute,
+  path: "messages",
   component: Messages,
 });
 
 const notificationRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/notification",
+  getParentRoute: () => menuRoute,
+  path: "notification",
   component: Notification,
 });
 
 const profileRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/profile",
+  getParentRoute: () => menuRoute,
+  path: "profile",
   component: Profile,
 });
 
+//routes without menu
 const logInRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/login",
@@ -63,26 +69,23 @@ const logInRoute = createRoute({
 
 const signInRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/signin",
+  path: "signin",
   component: SignIn,
 });
 
-//router
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
-    indexRoute,
+    //menuMain
+    menuRoute.addChildren([
+      indexRoute,
+      searchRoute,
+      exploreRoute,
+      messagesRoute,
+      notificationRoute,
+      profileRoute,
+    ]),
+    //auth
     logInRoute,
     signInRoute,
-    searchRoute,
-    profileRoute,
-    exploreRoute,
-    messagesRoute,
-    notificationRoute,
   ]),
 });
-
-declare module "@tanstack/react-router" {
-  interface Register {
-    router: typeof router;
-  }
-}
