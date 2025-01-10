@@ -11,7 +11,7 @@ const Main = () => {
         <div className="grid grid-cols-[225px_1fr]">
           {/* dummy block */}
           <div></div>
-          <div className="mx-auto mt-3">
+          <div className="mx-auto mt-6">
             <Outlet />
           </div>
         </div>
