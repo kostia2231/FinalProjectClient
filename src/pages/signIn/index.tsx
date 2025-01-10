@@ -1,7 +1,7 @@
-import FormSignIn from "../../components/formSignIn";
 import { Link } from "@tanstack/react-router";
+import FormSignIn from "../../components/formSignIn";
 
-const SignIn = () => {
+const SignIn = (): JSX.Element => {
   return (
     <>
       <div className="mt-12 w-screen">

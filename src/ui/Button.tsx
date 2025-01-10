@@ -13,7 +13,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     { type = "button", variant = "primary", children, onClick, icon, ...props },
     ref,
-  ) => {
+  ): JSX.Element => {
     const styles = {
       primary:
         "bg-blue-500 hover:bg-blue-400 active:bg-blue-300  text-white rounded-xl p-2 font-semibold",

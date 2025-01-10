@@ -4,7 +4,7 @@ import Button from "../../ui/Button";
 import ErrorMessage from "../../ui/ErrorMessage";
 import Input from "../../ui/Input";
 
-const FormLogIn = () => {
+const FormLogIn = (): JSX.Element => {
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: {

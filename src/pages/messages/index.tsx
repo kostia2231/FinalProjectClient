@@ -1,4 +1,4 @@
-const Messages = () => {
+const Messages = (): JSX.Element => {
   return (
     <>
       <div>Messages</div>

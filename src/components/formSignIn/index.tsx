@@ -1,10 +1,10 @@
+import { useFormik } from "formik";
+import { loginSchema } from "../../schemas/index";
 import Input from "../../ui/Input";
 import Button from "../../ui/Button";
 import ErrorMessage from "../../ui/ErrorMessage";
-import { useFormik } from "formik";
-import { loginSchema } from "../../schemas/index";
 
-const FormSignIn = () => {
+const FormSignIn = (): JSX.Element => {
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: {

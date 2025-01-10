@@ -1,6 +1,4 @@
-import { FC } from "react";
-
-const NotFound: FC = () => {
+const NotFound = (): JSX.Element => {
   return (
     <>
       <div className="text-center flex flex-col gap-6 h-screen justify-center">

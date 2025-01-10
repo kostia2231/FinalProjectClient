@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect, MouseEvent, FC } from "react";
+import { useState, useRef, useEffect, MouseEvent } from "react";
+import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import Notifications from "../notifications";
 import MenuItemLink from "../../ui/MenuItemLink";
 import MenuItem from "../../ui/MenuItem";
-import Notifications from "../notifications";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import {
   HomeIcon,
   SearchIcon,
@@ -13,7 +13,7 @@ import {
   ProfileIcon,
 } from "../../assets/menu_icons/MenuIcons";
 
-const Menu: FC = () => {
+const Menu = (): JSX.Element => {
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const notificationsRef = useRef<HTMLDivElement | null>(null);
 

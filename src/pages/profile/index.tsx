@@ -1,6 +1,6 @@
 import Button from "../../ui/Button";
 
-const Profile = () => {
+const Profile = (): JSX.Element => {
   return (
     <>
       <header className="flex gap-20">

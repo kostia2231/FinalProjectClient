@@ -29,7 +29,10 @@ type TextareaSpecificProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
 type InputProps = BaseProps & (InputSpecificProps | TextareaSpecificProps);
 
 const Input = forwardRef<HTMLTextAreaElement | HTMLInputElement, InputProps>(
-  ({ variant = "primary", type = "text", onChange, onBlur, ...props }, ref) => {
+  (
+    { variant = "primary", type = "text", onChange, onBlur, ...props },
+    ref,
+  ): JSX.Element => {
     const styles = {
       primary:
         "placeholder:font-light placeholder:text-sm border rounded py-3 px-3 bg-gray-50 text-sm",

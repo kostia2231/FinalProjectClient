@@ -1,8 +1,8 @@
+import { Link } from "@tanstack/react-router";
 import FormLogIn from "../../components/formLogin";
 import AuthImg from "../../assets/images/auth.png";
-import { Link } from "@tanstack/react-router";
 
-const LogIn = () => {
+const LogIn = (): JSX.Element => {
   return (
     <>
       <div className="flex justify-between mt-12 px-[20%] gap-8 items-center">
