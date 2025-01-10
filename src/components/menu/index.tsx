@@ -1,5 +1,5 @@
 import MenuItem from "../../ui/MenuItem";
-import { Outlet, Link } from "@tanstack/react-router";
+import { Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import {
   HomeIcon,
@@ -14,41 +14,25 @@ import {
 const Menu = () => {
   return (
     <div className="flex flex-row w-screen">
-      <div className="fixed top-0 left-0 h-screen border-r w-[20%]">
+      <div className="fixed top-0 h-screen border-r w-[20%]">
         <div className="flex flex-col m-3 gap-3">
-          <Link to="/">
-            <MenuItem name="Home" icon={<HomeIcon />} path="/" />
-          </Link>
+          <MenuItem name="Home" icon={<HomeIcon />} path="/" />
 
-          <Link to="/search">
-            <MenuItem name="Search" icon={<SearchIcon />} path="/search" />
-          </Link>
+          <MenuItem name="Search" icon={<SearchIcon />} path="/search" />
 
-          <Link to="/explore">
-            <MenuItem name="Explore" icon={<ExploreIcon />} path="/explore" />
-          </Link>
+          <MenuItem name="Explore" icon={<ExploreIcon />} path="/explore" />
 
-          <Link to="/messages">
-            <MenuItem
-              name="Messages"
-              icon={<MessagesIcon />}
-              path="/messages"
-            />
-          </Link>
+          <MenuItem name="Messages" icon={<MessagesIcon />} path="/messages" />
 
-          <Link to="/notification">
-            <MenuItem
-              name="Notifications"
-              icon={<NotificationIcon />}
-              path="/notification"
-            />
-          </Link>
+          <MenuItem
+            name="Notifications"
+            icon={<NotificationIcon />}
+            path="/notification"
+          />
 
-          <MenuItem name="Create" icon={<CreateIcon />} path="create" />
+          <MenuItem name="Create" icon={<CreateIcon />} />
 
-          <Link to="/profile">
-            <MenuItem name="Profile" icon={<ProfileIcon />} path="/profile" />
-          </Link>
+          <MenuItem name="Profile" icon={<ProfileIcon />} path="/profile" />
 
           <TanStackRouterDevtools />
         </div>

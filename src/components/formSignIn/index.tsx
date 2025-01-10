@@ -8,7 +8,7 @@ const FormSignIn = () => {
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: {
-        name: "",
+        fullName: "",
         email: "",
         username: "",
         password: "",
@@ -46,15 +46,17 @@ const FormSignIn = () => {
             ) : null}
             <Input
               name="name"
-              value={values.name}
+              value={values.fullName}
               onChange={handleChange}
               onBlur={handleBlur}
-              variant={errors.name && touched.name ? "error" : "primary"}
+              variant={
+                errors.fullName && touched.fullName ? "error" : "primary"
+              }
               type="text"
               placeholder="Full Name"
             ></Input>
-            {errors.name && touched.name ? (
-              <ErrorMessage>{errors.name}</ErrorMessage>
+            {errors.fullName && touched.fullName ? (
+              <ErrorMessage>{errors.fullName}</ErrorMessage>
             ) : null}
             <Input
               name="username"

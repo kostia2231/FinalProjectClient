@@ -1,27 +1,20 @@
 import { ReactNode, FC } from "react";
-import { useLocation } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 
 interface MenuItemP {
   icon: ReactNode;
   name: string;
-  path: string;
+  path?: string;
 }
 
 const MenuItem: FC<MenuItemP> = ({ icon, name, path }) => {
-  const pathname = useLocation({
-    select: (location) => location.pathname,
-  });
   return (
-    <>
-      <div className="flex gap-4 h-auto rounded-lg  cursor-pointer hover:bg-gray-100 p-3 justify-start items-start">
+    <Link to={path} className="[&.active]:font-bold">
+      <div className="flex gap-4 h-auto rounded-lg hover:bg-gray-100 p-3">
         <div>{icon}</div>
-        <p
-          className={`text-[1rem] ${path === pathname ? "font-bold" : "font-normal"}`}
-        >
-          {name}
-        </p>
+        <p>{name}</p>
       </div>
-    </>
+    </Link>
   );
 };
 export default MenuItem;
