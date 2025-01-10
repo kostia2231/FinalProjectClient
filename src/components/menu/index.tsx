@@ -64,7 +64,7 @@ const Menu: FC = () => {
             className="notification-button"
           />
 
-          <MenuItemLink name="Create" icon={<CreateIcon />} path="create" />
+          <MenuItem name="Create" icon={<CreateIcon />} />
 
           <MenuItemLink name="Profile" icon={<ProfileIcon />} path="/profile" />
 

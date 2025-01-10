@@ -1,4 +1,4 @@
-import { SVGIconP, SvgIcon } from "../../components/svg";
+import { SVGIconP, SvgIcon } from "../../ui/SVGIcon";
 
 export const HomeIcon = (props: SVGIconP) => {
   return (

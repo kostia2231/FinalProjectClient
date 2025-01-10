@@ -10,6 +10,7 @@ import Search from "../pages/search";
 import Explore from "../pages/explore";
 import Messages from "../pages/messages";
 import Profile from "../pages/profile";
+import NotFound from "../pages/404";
 
 //shared root
 const rootRoute = createRootRoute();
@@ -64,11 +65,11 @@ const signInRoute = createRoute({
   component: SignIn,
 });
 
-// const notFoundRoute = createRoute({
-//   getParentRoute: () => rootRoute,
-//   path: "*",
-//   component: NotFound,
-// });
+const notFoundRoute = createRoute({
+  getParentRoute: () => menuRoute,
+  path: "*",
+  component: NotFound,
+});
 
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
@@ -79,6 +80,7 @@ export const router = createRouter({
       exploreRoute,
       messagesRoute,
       profileRoute,
+      notFoundRoute,
     ]),
     //auth
     logInRoute,
