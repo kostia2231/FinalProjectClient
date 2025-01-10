@@ -9,7 +9,6 @@ import Main from "../pages/main";
 import Search from "../pages/search";
 import Explore from "../pages/explore";
 import Messages from "../pages/messages";
-import Notification from "../pages/notification";
 import Profile from "../pages/profile";
 
 //shared root
@@ -22,7 +21,6 @@ const menuRoute = createRoute({
   component: Main,
 });
 
-//routes in the menu layout
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
@@ -47,12 +45,6 @@ const messagesRoute = createRoute({
   component: Messages,
 });
 
-const notificationRoute = createRoute({
-  getParentRoute: () => menuRoute,
-  path: "notification",
-  component: Notification,
-});
-
 const profileRoute = createRoute({
   getParentRoute: () => menuRoute,
   path: "profile",
@@ -72,6 +64,12 @@ const signInRoute = createRoute({
   component: SignIn,
 });
 
+// const notFoundRoute = createRoute({
+//   getParentRoute: () => rootRoute,
+//   path: "*",
+//   component: NotFound,
+// });
+
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
     //menuMain
@@ -80,7 +78,6 @@ export const router = createRouter({
       searchRoute,
       exploreRoute,
       messagesRoute,
-      notificationRoute,
       profileRoute,
     ]),
     //auth

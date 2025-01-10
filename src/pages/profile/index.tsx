@@ -5,8 +5,9 @@ const Profile = () => {
     <>
       <header className="flex gap-20">
         <section>
-          <div className="w-[120px] h-[120px] bg-gray-300 rounded-full" />
+          <div className="w-[120px] h-[120px] bg-white border rounded-full" />
         </section>
+
         <section className="grid gap-6">
           <div className="flex items-center gap-6">
             <p>username</p>
@@ -27,13 +28,14 @@ const Profile = () => {
           </div>
         </section>
       </header>
-      <main className="grid gap-1 mt-20 grid-cols-3">
-        <div className="w-[300px] h-[300px] bg-gray-300" />
-        <div className="w-[300px] h-[300px] bg-gray-300" />
-        <div className="w-[300px] h-[300px] bg-gray-300" />
-        <div className="w-[300px] h-[300px] bg-gray-300" />
-        <div className="w-[300px] h-[300px] bg-gray-300" />
-        <div className="w-[300px] h-[300px] bg-gray-300" />
+
+      <main className="grid gap-1 mt-16 grid-cols-3 border-t pt-5">
+        <div className="w-[300px] h-[300px] bg-gray-100" />
+        <div className="w-[300px] h-[300px] bg-gray-100" />
+        <div className="w-[300px] h-[300px] bg-gray-100" />
+        <div className="w-[300px] h-[300px] bg-gray-100" />
+        <div className="w-[300px] h-[300px] bg-gray-100" />
+        <div className="w-[300px] h-[300px] bg-gray-100" />
       </main>
     </>
   );
