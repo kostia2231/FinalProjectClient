@@ -48,5 +48,5 @@ export const loginSchema = yup.object().shape({
   username: usernameRules,
   email: emailRules,
   password: passwordRules,
-  name: nameRules,
+  fullName: nameRules,
 });

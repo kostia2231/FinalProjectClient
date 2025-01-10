@@ -5,7 +5,6 @@ import {
 } from "@tanstack/react-router";
 import LogIn from "../pages/login";
 import SignIn from "../pages/signIn";
-import Menu from "../components/menu";
 import Main from "../pages/main";
 import Search from "../pages/search";
 import Explore from "../pages/explore";
@@ -19,13 +18,13 @@ const rootRoute = createRootRoute();
 //routes with menu
 const menuRoute = createRoute({
   getParentRoute: () => rootRoute,
-  id: "menu",
-  component: Menu,
+  id: "main",
+  component: Main,
 });
 
 //routes in the menu layout
 const indexRoute = createRoute({
-  getParentRoute: () => menuRoute,
+  getParentRoute: () => rootRoute,
   path: "/",
   component: Main,
 });
