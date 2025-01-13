@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, MouseEvent } from "react";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import Notifications from "../notifications";
+import CreateModal from "../createModal";
 import Search from "../search";
 import MenuItemLink from "../../ui/MenuItemLink";
 import MenuItem from "../../ui/MenuItem";
@@ -15,6 +16,7 @@ import {
 } from "../../assets/menu_icons/MenuIcons";
 
 const Menu = (): JSX.Element => {
+  const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
 
@@ -27,6 +29,10 @@ const Menu = (): JSX.Element => {
 
   function toggleSearch(): void {
     setIsSearchOpen((prev) => !prev);
+  }
+
+  function toggleCreateModal(): void {
+    setCreateModalOpen((prev) => !prev);
   }
 
   useEffect(() => {
@@ -96,7 +102,11 @@ const Menu = (): JSX.Element => {
             className="notification-button"
           />
 
-          <MenuItem name="Create" icon={<CreateIcon />} />
+          <MenuItem
+            name="Create"
+            icon={<CreateIcon />}
+            onClick={toggleCreateModal}
+          />
 
           <MenuItemLink name="Profile" icon={<ProfileIcon />} path="/profile" />
 
@@ -108,6 +118,11 @@ const Menu = (): JSX.Element => {
         {isNotificationOpen && <Notifications ref={notificationsRef} />}
 
         {isSearchOpen && <Search ref={searchRef} />}
+
+        <CreateModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setCreateModalOpen(false)}
+        />
       </div>
     </>
   );

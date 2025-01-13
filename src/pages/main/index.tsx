@@ -8,12 +8,8 @@ const Main = (): JSX.Element => {
         <div className="h-screen fixed w-fit">
           <Menu />
         </div>
-        <div className="grid grid-cols-[225px_1fr]">
-          {/* dummy block */}
-          <div></div>
-          <div className="mx-auto mt-6">
-            <Outlet />
-          </div>
+        <div className="ml-[225px] pt-6 flex justify-center">
+          <Outlet />
         </div>
       </div>
     </>

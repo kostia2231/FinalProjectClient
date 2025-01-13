@@ -2,7 +2,7 @@ import Button from "../../ui/Button";
 
 const Profile = (): JSX.Element => {
   return (
-    <>
+    <div>
       <header className="flex gap-20">
         <section>
           <div className="w-[120px] h-[120px] bg-white border rounded-full" />
@@ -37,7 +37,7 @@ const Profile = (): JSX.Element => {
         <div className="w-[300px] h-[300px] bg-gray-100" />
         <div className="w-[300px] h-[300px] bg-gray-100" />
       </main>
-    </>
+    </div>
   );
 };
 export default Profile;
