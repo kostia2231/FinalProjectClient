@@ -1,5 +1,6 @@
 import { useFormik } from "formik";
-import { loginSchema } from "../../schemas/index";
+import axios from "axios";
+import { loginSchema } from "../../schemas/login";
 import Button from "../../ui/Button";
 import ErrorMessage from "../../ui/ErrorMessage";
 import Input from "../../ui/Input";
@@ -8,12 +9,32 @@ const FormLogIn = (): JSX.Element => {
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: {
-        username: "",
+        login: "",
         password: "",
       },
-      onSubmit: (values, actions) => {
-        console.log("Form values were sent:", values);
-        actions.resetForm();
+
+      onSubmit: async (values, actions) => {
+        try {
+          console.log(values);
+          const response = await axios.post(
+            "http://localhost:3333/auth/login",
+            values,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            },
+          );
+
+          console.log("login success:", response.data);
+          actions.resetForm();
+        } catch (err) {
+          if (axios.isAxiosError(err) && err.response) {
+            console.error("error while login: ", err.response.data.message);
+          } else {
+            console.error("server error: ", (err as Error).message);
+          }
+        }
       },
       validationSchema: loginSchema,
     });
@@ -27,16 +48,16 @@ const FormLogIn = (): JSX.Element => {
       >
         <div className="flex flex-col gap-2">
           <Input
-            name="username"
-            value={values.username}
+            name="login"
+            value={values.login}
             onChange={handleChange}
             onBlur={handleBlur}
-            variant={errors.username && touched.username ? "error" : "primary"}
+            variant={errors.login && touched.login ? "error" : "primary"}
             type="text"
             placeholder="Username or email"
           ></Input>
-          {errors.username && touched.username ? (
-            <ErrorMessage>{errors.username}</ErrorMessage>
+          {errors.login && touched.login ? (
+            <ErrorMessage>{errors.login}</ErrorMessage>
           ) : null}
           <Input
             name="password"

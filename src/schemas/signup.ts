@@ -44,7 +44,7 @@ const emailRules = yup
     "Email must be in a valid format like user@example.com",
   );
 
-export const loginSchema = yup.object().shape({
+export const signUpSchema = yup.object().shape({
   username: usernameRules,
   email: emailRules,
   password: passwordRules,
