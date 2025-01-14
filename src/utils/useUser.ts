@@ -31,6 +31,7 @@ const useUser = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log(response.data);
       return response.data;
     },
     enabled: !!username,
@@ -47,7 +48,10 @@ const useUser = () => {
           },
         },
       );
-      // console.log(response.data);
+
+      const newToken: string = String(response.data.token);
+      localStorage.setItem("token", newToken);
+      setUsername(jwtDecode<DecodedToken>(newToken).username);
       return response.data;
     },
     onSuccess: () => {
