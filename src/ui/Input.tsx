@@ -7,7 +7,7 @@ import {
   Ref,
 } from "react";
 
-type InputVariant = "primary" | "secondary" | "error";
+type InputVariant = "primary" | "secondary" | "error" | "edit";
 
 interface BaseProps {
   className?: string;
@@ -36,6 +36,7 @@ const Input = forwardRef<HTMLTextAreaElement | HTMLInputElement, InputProps>(
     const styles = {
       primary:
         "placeholder:font-light placeholder:text-sm border rounded py-3 px-3 bg-gray-50 text-sm",
+      edit: "placeholder:font-light placeholder:text-sm border rounded-xl py-3 px-3 text-sm",
       secondary: "border-blue-300",
       error:
         "placeholder:font-light placeholder:text-sm border rounded py-3 px-3 bg-red-50 border-red-100 text-sm",

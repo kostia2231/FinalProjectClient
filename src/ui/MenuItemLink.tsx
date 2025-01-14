@@ -4,7 +4,7 @@ import { Link } from "@tanstack/react-router";
 interface MenuItemP {
   icon: ReactNode;
   name: string;
-  path?: string;
+  path: string;
 }
 
 const MenuItemLink: FC<MenuItemP> = ({ icon, name, path }) => {

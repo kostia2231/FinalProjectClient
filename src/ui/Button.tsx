@@ -16,7 +16,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ): JSX.Element => {
     const styles = {
       primary:
-        "bg-blue-500 hover:bg-blue-400 active:bg-blue-300  text-white rounded-xl p-2 font-semibold",
+        "bg-blue-500 hover:bg-blue-400 active:bg-blue-300 text-white rounded-xl p-2 font-medium w-full",
       profile:
         "bg-gray-100 text-black py-2 px-9 rounded-lg text-sm font-semibold",
       icon: "h-10 w-10 bg-green-500",

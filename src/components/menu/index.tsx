@@ -14,8 +14,13 @@ import {
   CreateIcon,
   ProfileIcon,
 } from "../../assets/menu_icons/MenuIcons";
+import useUser from "../../utils/useUser";
 
 const Menu = (): JSX.Element => {
+  useUser();
+  const { cachedData } = useUser();
+  console.log(cachedData);
+
   const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);

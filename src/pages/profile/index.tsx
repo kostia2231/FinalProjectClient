@@ -1,6 +1,16 @@
+import { useNavigate } from "@tanstack/react-router";
 import Button from "../../ui/Button";
+import useUser from "../../utils/useUser";
 
 const Profile = (): JSX.Element => {
+  const { cachedData } = useUser();
+
+  const navigate = useNavigate();
+  function toEdit() {
+    navigate({ to: "/edit" });
+  }
+
+  //to add pending and errors
   return (
     <div>
       <header className="flex gap-20">
@@ -10,20 +20,31 @@ const Profile = (): JSX.Element => {
 
         <section className="grid gap-6">
           <div className="flex items-center gap-6">
-            <p>username</p>
-            <Button variant="profile">Edit profile</Button>
+            <p>{cachedData?.user.username}</p>
+            <Button variant="profile" onClick={toEdit}>
+              Edit profile
+            </Button>
           </div>
           <div className="flex gap-6 text">
-            <p>0 posts</p>
-            <p>0 followers</p>
-            <p>0 following</p>
+            <div className="flex gap-2">
+              <p>{cachedData?.user.postsCount}</p>
+              <p>posts</p>
+            </div>
+            <div className="flex gap-2">
+              <p>{cachedData?.user.followersCount}</p>
+              <p>folowers</p>
+            </div>
+            <div className="flex gap-2">
+              <p>{cachedData?.user.followingCount}</p>
+              <p>posts</p>
+            </div>
           </div>
           <div>
-            <p>this is to become a bio section</p>
+            <p>{cachedData?.user.bio}</p>
           </div>
           <div>
             <a className="text-blue-900 font-semibold" href="">
-              http://www.notalink.com
+              {cachedData?.user.website}
             </a>
           </div>
         </section>

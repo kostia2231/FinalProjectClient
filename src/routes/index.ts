@@ -12,6 +12,7 @@ import Search from "../pages/search";
 import Explore from "../pages/explore";
 import Messages from "../pages/messages";
 import Profile from "../pages/profile";
+import ProfileEdit from "../pages/profileEdit";
 import NotFound from "../pages/404";
 
 const rootRoute = createRootRoute();
@@ -58,6 +59,12 @@ const profileRoute = createRoute({
   component: Profile,
 });
 
+const profileEditRoute = createRoute({
+  getParentRoute: () => menuRoute,
+  path: "edit",
+  component: ProfileEdit,
+});
+
 const notFoundRoute = createRoute({
   getParentRoute: () => menuRoute,
   path: "*",
@@ -85,6 +92,7 @@ export const router = createRouter({
         exploreRoute,
         messagesRoute,
         profileRoute,
+        profileEditRoute,
         notFoundRoute,
       ]),
     ]),
