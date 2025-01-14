@@ -3,6 +3,8 @@ import {
   createRoute,
   createRootRoute,
 } from "@tanstack/react-router";
+import ProtectedRoutes from "../utils/ProtectedRoutes";
+import Home from "../pages/home";
 import LogIn from "../pages/login";
 import SignIn from "../pages/signIn";
 import Main from "../pages/main";
@@ -12,20 +14,24 @@ import Messages from "../pages/messages";
 import Profile from "../pages/profile";
 import NotFound from "../pages/404";
 
-//shared root
 const rootRoute = createRootRoute();
 
-//routes with menu
-const menuRoute = createRoute({
+const rootProtected = createRoute({
   getParentRoute: () => rootRoute,
+  id: "protected",
+  component: ProtectedRoutes,
+});
+
+const menuRoute = createRoute({
+  getParentRoute: () => rootProtected,
   id: "main",
   component: Main,
 });
 
 const indexRoute = createRoute({
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => menuRoute,
   path: "/",
-  component: Main,
+  component: Home,
 });
 
 const searchRoute = createRoute({
@@ -52,7 +58,12 @@ const profileRoute = createRoute({
   component: Profile,
 });
 
-//routes without menu
+const notFoundRoute = createRoute({
+  getParentRoute: () => menuRoute,
+  path: "*",
+  component: NotFound,
+});
+
 const logInRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "login",
@@ -65,24 +76,18 @@ const signInRoute = createRoute({
   component: SignIn,
 });
 
-const notFoundRoute = createRoute({
-  getParentRoute: () => menuRoute,
-  path: "*",
-  component: NotFound,
-});
-
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
-    //menuMain
-    menuRoute.addChildren([
-      indexRoute,
-      searchRoute,
-      exploreRoute,
-      messagesRoute,
-      profileRoute,
-      notFoundRoute,
+    rootProtected.addChildren([
+      menuRoute.addChildren([
+        indexRoute,
+        searchRoute,
+        exploreRoute,
+        messagesRoute,
+        profileRoute,
+        notFoundRoute,
+      ]),
     ]),
-    //auth
     logInRoute,
     signInRoute,
   ]),

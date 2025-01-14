@@ -28,7 +28,7 @@ const CreateModal: FC<ICreateModal> = ({ isOpen, onClose }) => {
       >
         <div className="bg-white w-[200px] h-[200px] mx-auto my-[10%] rounded-[16px] p-6">
           <div>
-            <div className="text-center">Creacte post</div>
+            <div className="text-center">Create post</div>
           </div>
         </div>
       </div>

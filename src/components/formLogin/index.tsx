@@ -4,8 +4,10 @@ import { loginSchema } from "../../schemas/login";
 import Button from "../../ui/Button";
 import ErrorMessage from "../../ui/ErrorMessage";
 import Input from "../../ui/Input";
+import { useNavigate } from "@tanstack/react-router";
 
 const FormLogIn = (): JSX.Element => {
+  const navigate = useNavigate();
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: {
@@ -15,7 +17,6 @@ const FormLogIn = (): JSX.Element => {
 
       onSubmit: async (values, actions) => {
         try {
-          console.log(values);
           const response = await axios.post(
             "http://localhost:3333/auth/login",
             values,
@@ -26,8 +27,9 @@ const FormLogIn = (): JSX.Element => {
             },
           );
 
-          console.log("login success:", response.data);
+          localStorage.setItem("token", response.data.token);
           actions.resetForm();
+          navigate({ to: "/" });
         } catch (err) {
           if (axios.isAxiosError(err) && err.response) {
             console.error("error while login: ", err.response.data.message);
