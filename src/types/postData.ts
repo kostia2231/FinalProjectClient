@@ -4,7 +4,12 @@ export interface IPost {
   imgUrls: string[];
 }
 
+export interface IPostData {
+  message: string;
+  post: IPost;
+}
+
 export interface IPostsData {
   message: string;
-  posts: IPost;
+  posts: IPost[];
 }

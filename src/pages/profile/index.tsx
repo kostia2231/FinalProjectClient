@@ -3,12 +3,23 @@ import Button from "../../ui/Button";
 import useUser from "../../utils/useUser";
 import { useUserPosts } from "../../utils/usePost";
 import { useEffect, useState } from "react";
+import PostModal from "../../components/postModal";
 import { IPost } from "../../types/postData";
 
 const Profile = (): JSX.Element => {
   const { cachedData } = useUser();
   const [userPosts, setUserPosts] = useState<IPost[] | undefined>(undefined);
+  const [openPostId, setOpenPostId] = useState<string | null>(null);
+
   const { cachedUserPostsData } = useUserPosts();
+
+  function handleClick(postId: string): void {
+    setOpenPostId(postId);
+  }
+
+  function closeModal(): void {
+    setOpenPostId(null);
+  }
 
   useEffect(() => {
     if (cachedUserPostsData?.posts) {
@@ -70,11 +81,21 @@ const Profile = (): JSX.Element => {
 
       <main className="grid gap-1 mt-16 grid-cols-3 border-t pt-5">
         {userPosts?.map((post) => (
-          <img
-            key={post._id}
-            className="h-[300px] w-[300px] object-cover"
-            src={post.imgUrls[0]}
-          />
+          <div key={post._id}>
+            <img
+              onClick={() => handleClick(post._id)}
+              className="h-[300px] w-[300px] object-cover cursor-pointer"
+              src={post.imgUrls[0]}
+              alt={`Post ${post._id}`}
+            />
+            {openPostId === post._id && (
+              <PostModal
+                isOpen={!!openPostId}
+                onClose={closeModal}
+                postId={post._id}
+              />
+            )}
+          </div>
         ))}
         {!userPosts && (
           <>
