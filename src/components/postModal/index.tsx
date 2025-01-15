@@ -1,6 +1,7 @@
 import { createPortal } from "react-dom";
 import { FC, useState, useEffect } from "react";
 import InputComment from "../../ui/InputComment";
+import PostEditModal from "../postEditModel";
 import { useOnePost } from "../../utils/useOnePost";
 import { useUserById } from "../../utils/useUser";
 
@@ -13,6 +14,7 @@ interface ICreateModal {
 const PostModal: FC<ICreateModal> = ({ isOpen, onClose, postId }) => {
   const { data, isFetching } = useOnePost({ postId });
   const [userId, setUserId] = useState<string | undefined>(undefined);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const { data: userData } = useUserById({
     userId,
   });
@@ -40,6 +42,10 @@ const PostModal: FC<ICreateModal> = ({ isOpen, onClose, postId }) => {
     }
   }
 
+  function toggleEditModal() {
+    setIsEditModalOpen((prev) => !prev); // Переключение видимости модалки
+  }
+
   return createPortal(
     <>
       <div
@@ -65,7 +71,9 @@ const PostModal: FC<ICreateModal> = ({ isOpen, onClose, postId }) => {
                 <div>
                   <div className="flex justify-between gap-6 border-b p-3">
                     <div className="font-medium">{userData?.user.username}</div>
-                    <div>+++</div>
+                    <div onClick={toggleEditModal} className="cursor-pointer">
+                      +++
+                    </div>
                   </div>
                   <div className="p-3 flex gap-2">
                     <div className="font-medium">{userData?.user.username}</div>
@@ -79,6 +87,9 @@ const PostModal: FC<ICreateModal> = ({ isOpen, onClose, postId }) => {
             </div>
           )}
         </div>
+        {isEditModalOpen && (
+          <PostEditModal isOpen={isEditModalOpen} onClose={toggleEditModal} />
+        )}
       </div>
     </>,
     modalRoot,
