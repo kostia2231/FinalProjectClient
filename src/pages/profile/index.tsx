@@ -36,7 +36,7 @@ const Profile = (): JSX.Element => {
             </div>
             <div className="flex gap-2">
               <p>{cachedData?.user.followingCount}</p>
-              <p>posts</p>
+              <p>folowing</p>
             </div>
           </div>
           <div>

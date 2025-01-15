@@ -1,7 +1,6 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import axios, { AxiosError } from "axios";
-import { useQueryClient } from "@tanstack/react-query";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { UserData } from "../types/userData";
 

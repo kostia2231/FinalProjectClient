@@ -1,5 +1,6 @@
 import { createPortal } from "react-dom";
 import { FC } from "react";
+import FileUploader from "../FileUploader";
 
 interface ICreateModal {
   isOpen: boolean;
@@ -23,13 +24,11 @@ const CreateModal: FC<ICreateModal> = ({ isOpen, onClose }) => {
   return createPortal(
     <>
       <div
-        className="fixed h-screen w-full z-2 top-0 ring-0 bg-black/70 overflow-auto"
+        className="fixed h-max-screen w-full z-2 top-0 ring-0 bg-black/70 overflow-auto"
         onClick={handleModalClick}
       >
-        <div className="bg-white w-[200px] h-[200px] mx-auto my-[10%] rounded-[16px] p-6">
-          <div>
-            <div className="text-center">Create post</div>
-          </div>
+        <div className="bg-white w-fit mx-auto my-[10%] rounded-[16px] p-6">
+          <FileUploader />
         </div>
       </div>
     </>,
