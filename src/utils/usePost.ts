@@ -1,6 +1,6 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useState, useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { IPostsData } from "../types/postData";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
@@ -23,7 +23,7 @@ export const useUserPosts = () => {
     }
   }, [token]);
 
-  const { data, error, isLoading, isFetching } = useQuery<IPostsData>({
+  const { data, error, isLoading, isFetching, refetch } = useQuery<IPostsData>({
     queryKey: ["userPostsData"],
     queryFn: async () => {
       const response = await axios.get(`http://localhost:3333/post/all/${id}`, {
@@ -41,11 +41,42 @@ export const useUserPosts = () => {
   const cachedUserPostsData = queryClient.getQueryData<IPostsData>([
     "userPostsData",
   ]);
+  queryClient.invalidateQueries({ queryKey: "userData" });
+
   return {
+    refetch,
     data,
     error,
     isLoading,
     isFetching,
     cachedUserPostsData,
   };
+};
+
+export const useDeleteOnePost = () => {
+  const token = localStorage.getItem("token");
+  const queryClient = useQueryClient();
+
+  const deletePost = useMutation({
+    mutationFn: async (postId: string) => {
+      const response = await axios.delete(
+        `http://localhost:3333/post/delete/${postId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return response.data;
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: "userData" });
+      window.location.reload();
+    },
+    onError: (error: AxiosError) => {
+      console.error("error editing:", error.response?.data);
+    },
+  });
+  return { deletePost };
 };

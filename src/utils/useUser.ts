@@ -27,16 +27,19 @@ const useUser = () => {
     }
   }, [token]);
 
-  const { data, error, isLoading, isFetching } = useQuery<UserData>({
+  const fetchUserData = async (username: string | null) => {
+    if (!username) throw new Error("Username is required");
+    const response = await axios.get(`http://localhost:3333/${username}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  };
+
+  const { data, error, isLoading, isFetching, refetch } = useQuery<UserData>({
     queryKey: ["userData"],
-    queryFn: async () => {
-      const response = await axios.get(`http://localhost:3333/${username}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
-    },
+    queryFn: () => fetchUserData(username),
     enabled: !!username,
   });
 
@@ -66,13 +69,17 @@ const useUser = () => {
   });
 
   const cachedData = queryClient.getQueryData<UserData>(["userData"]);
+  queryClient.invalidateQueries({ queryKey: "userData" });
+
   return {
+    refetch,
     cachedData,
     mutation,
     data,
     error,
     isLoading,
     isFetching,
+    fetchUserData,
   };
 };
 

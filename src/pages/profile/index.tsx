@@ -31,9 +31,6 @@ const Profile = (): JSX.Element => {
     }
   }, [cachedUserPostsData]);
 
-  /////delete later
-  console.log(userPosts);
-
   const navigate = useNavigate();
   function toEdit() {
     navigate({ to: "/edit" });

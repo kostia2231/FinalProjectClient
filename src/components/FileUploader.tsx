@@ -2,10 +2,16 @@ import axios, { AxiosError } from "axios";
 import { ChangeEvent, useState } from "react";
 import Button from "../ui/Button";
 import ImagePreview from "../ui/ImagePreview";
+import useUser from "../utils/useUser";
+import { useUserPosts } from "../utils/usePost";
 
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 
 const FileUploader = () => {
+  const { refetch: refetchUser } = useUser();
+  const { refetch: refetchUserPosts } = useUserPosts();
+
+  const token = localStorage.getItem("token");
   const [file, setFile] = useState<File | null>(null);
   const [caption, setCaption] = useState<string>("");
   const [status, setStatus] = useState<UploadStatus>("idle");
@@ -28,7 +34,6 @@ const FileUploader = () => {
   };
 
   async function handleFileUpload() {
-    const token = localStorage.getItem("token");
     if (!token) return;
     if (!file) return;
 
@@ -54,6 +59,8 @@ const FileUploader = () => {
       setCaption("");
       setFile(null);
       setStatus("success");
+      refetchUser();
+      refetchUserPosts();
     } catch (err) {
       console.error(`upload faild: ${(err as AxiosError).message}`);
       setStatus("error");

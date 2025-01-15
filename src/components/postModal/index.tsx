@@ -19,10 +19,6 @@ const PostModal: FC<ICreateModal> = ({ isOpen, onClose, postId }) => {
     userId,
   });
 
-  // console.log(data);
-  // console.log(userId);
-  // console.log(userData);
-
   useEffect(() => {
     if (data?.post.userId) {
       setUserId(data.post.userId);
@@ -43,7 +39,7 @@ const PostModal: FC<ICreateModal> = ({ isOpen, onClose, postId }) => {
   }
 
   function toggleEditModal() {
-    setIsEditModalOpen((prev) => !prev); // Переключение видимости модалки
+    setIsEditModalOpen((prev) => !prev);
   }
 
   return createPortal(
@@ -88,7 +84,11 @@ const PostModal: FC<ICreateModal> = ({ isOpen, onClose, postId }) => {
           )}
         </div>
         {isEditModalOpen && (
-          <PostEditModal isOpen={isEditModalOpen} onClose={toggleEditModal} />
+          <PostEditModal
+            isOpen={isEditModalOpen}
+            onClose={toggleEditModal}
+            postId={postId}
+          />
         )}
       </div>
     </>,

@@ -1,6 +1,7 @@
 import { createPortal } from "react-dom";
 import { FC } from "react";
 import Button from "../../ui/Button";
+import { useDeleteOnePost } from "../../utils/usePost";
 
 interface IEditModal {
   isOpen: boolean;
@@ -10,6 +11,7 @@ interface IEditModal {
 
 const PostEditModal: FC<IEditModal> = ({ isOpen, onClose, postId }) => {
   console.log(postId);
+  const { deletePost } = useDeleteOnePost();
 
   if (!isOpen) return null;
 
@@ -25,6 +27,12 @@ const PostEditModal: FC<IEditModal> = ({ isOpen, onClose, postId }) => {
     }
   }
 
+  function handleDelete() {
+    if (postId) {
+      deletePost.mutate(postId);
+    }
+  }
+
   return createPortal(
     <div
       className="fixed h-full w-full z-2 top-0 ring-0 bg-black/70 overflow-auto"
@@ -35,7 +43,11 @@ const PostEditModal: FC<IEditModal> = ({ isOpen, onClose, postId }) => {
         className="h-full w-full flex justify-center items-center"
       >
         <div className="bg-white rounded-[16px] flex flex-col">
-          <Button variant="edit" className="border-none text-red-500">
+          <Button
+            onClick={handleDelete}
+            variant="edit"
+            className="border-none text-red-500"
+          >
             Delete
           </Button>
           <Button variant="edit">Copy Link</Button>
