@@ -15,9 +15,11 @@ import {
   ProfileIcon,
 } from "../../assets/menu_icons/MenuIcons";
 import useUser from "../../utils/useUser";
+import { useUserPosts } from "../../utils/usePost";
 
 const Menu = (): JSX.Element => {
   useUser();
+  useUserPosts();
   const { cachedData } = useUser();
   console.log(cachedData);
 

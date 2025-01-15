@@ -1,9 +1,27 @@
 import { useNavigate } from "@tanstack/react-router";
 import Button from "../../ui/Button";
 import useUser from "../../utils/useUser";
+import { useUserPosts } from "../../utils/usePost";
+import { useEffect, useState } from "react";
+import { IPost } from "../../types/postData";
 
 const Profile = (): JSX.Element => {
   const { cachedData } = useUser();
+  const [userPosts, setUserPosts] = useState<IPost[] | undefined>(undefined);
+  const { cachedUserPostsData } = useUserPosts();
+
+  useEffect(() => {
+    if (cachedUserPostsData?.posts) {
+      setUserPosts(
+        Array.isArray(cachedUserPostsData.posts)
+          ? cachedUserPostsData.posts
+          : [cachedUserPostsData.posts],
+      );
+    }
+  }, [cachedUserPostsData]);
+
+  /////delete later
+  console.log(userPosts);
 
   const navigate = useNavigate();
   function toEdit() {
@@ -12,7 +30,7 @@ const Profile = (): JSX.Element => {
 
   //to add pending and errors
   return (
-    <div>
+    <div className="w-[908px]">
       <header className="flex gap-20">
         <section>
           <div className="w-[120px] h-[120px] bg-white border rounded-full" />
@@ -51,12 +69,18 @@ const Profile = (): JSX.Element => {
       </header>
 
       <main className="grid gap-1 mt-16 grid-cols-3 border-t pt-5">
-        <div className="w-[300px] h-[300px] bg-gray-100" />
-        <div className="w-[300px] h-[300px] bg-gray-100" />
-        <div className="w-[300px] h-[300px] bg-gray-100" />
-        <div className="w-[300px] h-[300px] bg-gray-100" />
-        <div className="w-[300px] h-[300px] bg-gray-100" />
-        <div className="w-[300px] h-[300px] bg-gray-100" />
+        {userPosts?.map((post) => (
+          <img
+            key={post._id}
+            className="h-[300px] w-[300px] object-cover"
+            src={post.imgUrls[0]}
+          />
+        ))}
+        {!userPosts && (
+          <>
+            <div>You have no posts yet.</div>
+          </>
+        )}
       </main>
     </div>
   );

@@ -1,4 +1,6 @@
 export interface UserData {
+  message?: string;
+  posts?: string[];
   user: {
     username: string;
     new_username: string;
