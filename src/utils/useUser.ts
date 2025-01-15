@@ -6,8 +6,13 @@ import { UserData } from "../types/userData";
 
 interface DecodedToken extends JwtPayload {
   username: string;
+  userId: string;
   exp: number;
   iat: number;
+}
+
+interface UseUserId {
+  userId?: string;
 }
 
 const useUser = () => {
@@ -30,7 +35,6 @@ const useUser = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data);
       return response.data;
     },
     enabled: !!username,
@@ -65,6 +69,32 @@ const useUser = () => {
   return {
     cachedData,
     mutation,
+    data,
+    error,
+    isLoading,
+    isFetching,
+  };
+};
+
+export const useUserById = ({ userId }: UseUserId) => {
+  const token = localStorage.getItem("token");
+  const queryClient = useQueryClient();
+
+  const { data, error, isLoading, isFetching } = useQuery<UserData>({
+    queryKey: ["userData"],
+    queryFn: async () => {
+      const response = await axios.get(`http://localhost:3333/id/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    },
+    enabled: !!userId,
+  });
+  const cachedData = queryClient.getQueryData<UserData>(["userData"]);
+  return {
+    cachedData,
     data,
     error,
     isLoading,

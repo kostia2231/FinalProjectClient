@@ -1,6 +1,8 @@
 import { createPortal } from "react-dom";
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
+import InputComment from "../../ui/InputComment";
 import { useOnePost } from "../../utils/useOnePost";
+import { useUserById } from "../../utils/useUser";
 
 interface ICreateModal {
   isOpen: boolean;
@@ -10,7 +12,20 @@ interface ICreateModal {
 
 const PostModal: FC<ICreateModal> = ({ isOpen, onClose, postId }) => {
   const { data, isFetching } = useOnePost({ postId });
-  console.log(data);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const { data: userData } = useUserById({
+    userId,
+  });
+
+  // console.log(data);
+  // console.log(userId);
+  // console.log(userData);
+
+  useEffect(() => {
+    if (data?.post.userId) {
+      setUserId(data.post.userId);
+    }
+  }, [data]);
 
   if (!isOpen) return null;
   const modalRoot = document.getElementById("post-modal");
@@ -46,7 +61,21 @@ const PostModal: FC<ICreateModal> = ({ isOpen, onClose, postId }) => {
                   />
                 ))}
               </div>
-              <div className="px-3">{data?.post.caption}</div>
+              <div className="text-sm w-[300px] flex flex-col">
+                <div>
+                  <div className="flex justify-between gap-6 border-b p-3">
+                    <div className="font-medium">{userData?.user.username}</div>
+                    <div>+++</div>
+                  </div>
+                  <div className="p-3 flex gap-2">
+                    <div className="font-medium">{userData?.user.username}</div>
+                    <div>{data?.post.caption}</div>
+                  </div>
+                </div>
+                <div className="p-3 mt-auto border-t">
+                  <InputComment />
+                </div>
+              </div>
             </div>
           )}
         </div>
