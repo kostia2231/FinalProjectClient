@@ -6,12 +6,13 @@ import { useOnePost } from "../../utilsQuery/useOnePost";
 import { useUserById } from "../../utilsQuery/useUser";
 
 interface ICreateModal {
+  isAdmin: boolean;
   isOpen: boolean;
   onClose: () => void;
   postId: string;
 }
 
-const PostModal: FC<ICreateModal> = ({ isOpen, onClose, postId }) => {
+const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
   const { data, isFetching } = useOnePost({ postId });
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
@@ -83,8 +84,10 @@ const PostModal: FC<ICreateModal> = ({ isOpen, onClose, postId }) => {
             </div>
           )}
         </div>
+
         {isEditModalOpen && (
           <PostEditModal
+            isAdmin={isAdmin}
             isOpen={isEditModalOpen}
             onClose={toggleEditModal}
             postId={postId}

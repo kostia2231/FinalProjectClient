@@ -4,12 +4,18 @@ import Button from "../../ui/Button";
 import { useDeleteOnePost } from "../../utilsQuery/usePost";
 
 interface IEditModal {
+  isAdmin: boolean;
   isOpen: boolean;
   onClose: () => void;
   postId?: string;
 }
 
-const PostEditModal: FC<IEditModal> = ({ isOpen, onClose, postId }) => {
+const PostEditModal: FC<IEditModal> = ({
+  isAdmin,
+  isOpen,
+  onClose,
+  postId,
+}) => {
   console.log(postId);
   const { deletePost } = useDeleteOnePost();
 
@@ -43,15 +49,22 @@ const PostEditModal: FC<IEditModal> = ({ isOpen, onClose, postId }) => {
         className="h-full w-full flex justify-center items-center"
       >
         <div className="bg-white rounded-[16px] flex flex-col">
-          <Button
-            onClick={handleDelete}
-            variant="edit"
-            className="border-none text-red-500"
-          >
-            Delete
+          {isAdmin && (
+            <>
+              <Button
+                onClick={handleDelete}
+                variant="edit"
+                className="border-none text-red-500"
+              >
+                Delete
+              </Button>
+              <hr />
+            </>
+          )}
+          <Button variant="edit" className="border-none">
+            Copy Link
           </Button>
-          <Button variant="edit">Copy Link</Button>
-          <Button variant="edit">Edit</Button>
+          {isAdmin && <Button variant="edit">Edit</Button>}
           <Button onClick={onClose} variant="edit">
             Cancel
           </Button>

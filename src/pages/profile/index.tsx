@@ -97,6 +97,8 @@ const Profile = (): JSX.Element => {
                 Edit profile
               </Button>
             )}
+            {!isAdmin && <Button variant="profilePrimary">Follow</Button>}
+            {!isAdmin && <Button variant="profile">Message</Button>}
           </div>
           <div className="flex gap-6 text">
             <div className="flex gap-2">
@@ -146,6 +148,7 @@ const Profile = (): JSX.Element => {
             />
             {openPostId === post._id && (
               <PostModal
+                isAdmin={isAdmin}
                 isOpen={!!openPostId}
                 onClose={closeModal}
                 postId={post._id}

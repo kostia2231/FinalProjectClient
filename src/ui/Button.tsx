@@ -1,7 +1,13 @@
 import clsx from "clsx";
 import { forwardRef, ButtonHTMLAttributes } from "react";
 
-type ButtonVariant = "primary" | "profile" | "icon" | "link" | "edit";
+type ButtonVariant =
+  | "primary"
+  | "profile"
+  | "icon"
+  | "link"
+  | "edit"
+  | "profilePrimary";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -27,6 +33,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         "bg-blue-500 hover:bg-blue-400 active:bg-blue-300 text-white rounded-xl p-2 font-medium w-full",
       profile:
         "bg-gray-100 text-black py-2 px-9 rounded-lg text-sm font-semibold",
+      profilePrimary:
+        "bg-blue-500 text-white py-2 px-9 rounded-lg text-sm font-semibold hover:bg-blue-300",
       link: "h-fit w-fit h-fit font-medium text-blue-400 hover:text-blue-300 ",
       edit: "w-[300px] p-4 border-t text-black hover:text-opacity-50",
       icon: "h-10 w-10 bg-green-500",
