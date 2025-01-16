@@ -10,7 +10,7 @@ export interface TPostData {
   post: TPost;
 }
 
-export interface IPostsData {
+export interface TPostsData {
   message: string;
   posts: TPost[];
 }
