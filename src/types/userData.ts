@@ -1,4 +1,4 @@
-export interface UserData {
+export interface TUserData {
   message?: string;
   posts?: string[];
   user: {

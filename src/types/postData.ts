@@ -1,16 +1,16 @@
-export interface IPost {
+export interface TPost {
   _id: string;
   userId: string;
   caption?: string;
   imgUrls: string[];
 }
 
-export interface IPostData {
+export interface TPostData {
   message: string;
-  post: IPost;
+  post: TPost;
 }
 
 export interface IPostsData {
   message: string;
-  posts: IPost[];
+  posts: TPost[];
 }

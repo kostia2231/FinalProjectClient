@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { IPostData } from "../types/postData";
+import { TPostData } from "../types/postData";
 
 interface UseOnePostProps {
   postId?: string;
@@ -10,7 +10,7 @@ export const useOnePost = ({ postId }: UseOnePostProps) => {
   const token = localStorage.getItem("token");
   const queryClient = useQueryClient();
 
-  const { data, error, isLoading, isFetching, isPending } = useQuery<IPostData>(
+  const { data, error, isLoading, isFetching, isPending } = useQuery<TPostData>(
     {
       queryKey: ["userOnePostData"],
       queryFn: async () => {
@@ -30,7 +30,7 @@ export const useOnePost = ({ postId }: UseOnePostProps) => {
     },
   );
 
-  const cachedUserPostsData = queryClient.getQueryData<IPostData>([
+  const cachedUserPostsData = queryClient.getQueryData<TPostData>([
     "userOnePostData",
   ]);
   return {

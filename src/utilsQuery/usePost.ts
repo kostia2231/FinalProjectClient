@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { IPostsData } from "../types/postData";
+import { TPostData } from "../types/postData";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
 interface DecodedToken extends JwtPayload {
@@ -23,7 +23,7 @@ export const useUserPosts = () => {
     }
   }, [token]);
 
-  const { data, error, isLoading, isFetching, refetch } = useQuery<IPostsData>({
+  const { data, error, isLoading, isFetching, refetch } = useQuery<TPostData>({
     queryKey: ["userPostsData"],
     queryFn: async () => {
       const response = await axios.get(`http://localhost:3333/post/all/${id}`, {
@@ -38,7 +38,7 @@ export const useUserPosts = () => {
     enabled: !!id,
   });
 
-  const cachedUserPostsData = queryClient.getQueryData<IPostsData>([
+  const cachedUserPostsData = queryClient.getQueryData<TPostData>([
     "userPostsData",
   ]);
   queryClient.invalidateQueries({ queryKey: "userData" });

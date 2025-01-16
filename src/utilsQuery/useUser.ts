@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import axios, { AxiosError } from "axios";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { UserData } from "../types/userData";
+import { TUserData } from "../types/userData";
 
 interface DecodedToken extends JwtPayload {
   username: string;
@@ -15,7 +15,7 @@ interface UseUserId {
   userId?: string;
 }
 
-const useUser = () => {
+export const useUser = () => {
   const token = localStorage.getItem("token");
   const [username, setUsername] = useState<string | null>(null);
   const queryClient = useQueryClient();
@@ -37,14 +37,14 @@ const useUser = () => {
     return response.data;
   };
 
-  const { data, error, isLoading, isFetching, refetch } = useQuery<UserData>({
+  const { data, error, isLoading, isFetching, refetch } = useQuery<TUserData>({
     queryKey: ["userData"],
     queryFn: () => fetchUserData(username),
     enabled: !!username,
   });
 
   const mutation = useMutation({
-    mutationFn: async (updatedData: Partial<UserData["user"]>) => {
+    mutationFn: async (updatedData: Partial<TUserData["user"]>) => {
       const response = await axios.put(
         `http://localhost:3333/${username}/edit`,
         updatedData,
@@ -68,7 +68,7 @@ const useUser = () => {
     },
   });
 
-  const cachedData = queryClient.getQueryData<UserData>(["userData"]);
+  const cachedData = queryClient.getQueryData<TUserData>(["userData"]);
   queryClient.invalidateQueries({ queryKey: "userData" });
 
   return {
@@ -87,7 +87,7 @@ export const useUserById = ({ userId }: UseUserId) => {
   const token = localStorage.getItem("token");
   const queryClient = useQueryClient();
 
-  const { data, error, isLoading, isFetching } = useQuery<UserData>({
+  const { data, error, isLoading, isFetching } = useQuery<TUserData>({
     queryKey: ["userData"],
     queryFn: async () => {
       const response = await axios.get(`http://localhost:3333/id/${userId}`, {
@@ -99,7 +99,7 @@ export const useUserById = ({ userId }: UseUserId) => {
     },
     enabled: !!userId,
   });
-  const cachedData = queryClient.getQueryData<UserData>(["userData"]);
+  const cachedData = queryClient.getQueryData<TUserData>(["userData"]);
   return {
     cachedData,
     data,
@@ -108,5 +108,3 @@ export const useUserById = ({ userId }: UseUserId) => {
     isFetching,
   };
 };
-
-export default useUser;

@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
 import { FC } from "react";
-import FileUploader from "../FileUploader";
+import FileUploader from "../../ui/FileUploader";
 
 interface ICreateModal {
   isOpen: boolean;

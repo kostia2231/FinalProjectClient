@@ -1,9 +1,9 @@
 import axios, { AxiosError } from "axios";
 import { ChangeEvent, useState } from "react";
-import Button from "../ui/Button";
-import ImagePreview from "../ui/ImagePreview";
-import useUser from "../utils/useUser";
-import { useUserPosts } from "../utils/usePost";
+import Button from "./Button";
+import ImagePreview from "./ImagePreview";
+import { useUser } from "../utilsQuery/useUser";
+import { useUserPosts } from "../utilsQuery/usePost";
 
 type UploadStatus = "idle" | "uploading" | "success" | "error";
 

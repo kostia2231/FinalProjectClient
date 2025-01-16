@@ -2,8 +2,8 @@ import { createPortal } from "react-dom";
 import { FC, useState, useEffect } from "react";
 import InputComment from "../../ui/InputComment";
 import PostEditModal from "../postEditModel";
-import { useOnePost } from "../../utils/useOnePost";
-import { useUserById } from "../../utils/useUser";
+import { useOnePost } from "../../utilsQuery/useOnePost";
+import { useUserById } from "../../utilsQuery/useUser";
 
 interface ICreateModal {
   isOpen: boolean;

@@ -14,8 +14,8 @@ import {
   CreateIcon,
   ProfileIcon,
 } from "../../assets/menu_icons/MenuIcons";
-import useUser from "../../utils/useUser";
-import { useUserPosts } from "../../utils/usePost";
+import { useUser } from "../../utilsQuery/useUser";
+import { useUserPosts } from "../../utilsQuery/usePost";
 
 const Menu = (): JSX.Element => {
   useUser();

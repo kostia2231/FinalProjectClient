@@ -1,7 +1,7 @@
 import { createPortal } from "react-dom";
 import { FC } from "react";
 import Button from "../../ui/Button";
-import { useDeleteOnePost } from "../../utils/usePost";
+import { useDeleteOnePost } from "../../utilsQuery/usePost";
 
 interface IEditModal {
   isOpen: boolean;

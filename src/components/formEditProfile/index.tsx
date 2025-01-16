@@ -1,10 +1,10 @@
-import { useFormik } from "formik";
 import { useState, useEffect } from "react";
+import { useFormik } from "formik";
+import { AxiosError, AxiosResponse } from "axios";
 import Button from "../../ui/Button";
 import Input from "../../ui/Input";
-import useUser from "../../utils/useUser";
-import { UserData } from "../../types/userData";
-import { AxiosError, AxiosResponse } from "axios";
+import { useUser } from "../../utilsQuery/useUser";
+import { TUserData } from "../../types/userData";
 
 interface IProfileEditError extends AxiosError {
   response?: AxiosResponse<{
@@ -37,7 +37,7 @@ const FormProfileEdit = (): JSX.Element => {
     enableReinitialize: true,
 
     onSubmit: async (values, actions) => {
-      const updatedData: Partial<UserData["user"]> = {
+      const updatedData: Partial<TUserData["user"]> = {
         new_username: values.username,
         website: values.website,
         bio: values.bio,

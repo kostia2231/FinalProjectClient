@@ -3,7 +3,7 @@ import {
   createRoute,
   createRootRoute,
 } from "@tanstack/react-router";
-import ProtectedRoutes from "../utils/ProtectedRoutes";
+import ProtectedRoutes from "../ui/ProtectedRoutes";
 import Home from "../pages/home";
 import LogIn from "../pages/login";
 import SignIn from "../pages/signIn";

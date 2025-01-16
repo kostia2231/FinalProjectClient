@@ -1,14 +1,14 @@
-import { useNavigate } from "@tanstack/react-router";
-import Button from "../../ui/Button";
-import useUser from "../../utils/useUser";
-import { useUserPosts } from "../../utils/usePost";
 import { useEffect, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { useUser } from "../../utilsQuery/useUser";
+import { useUserPosts } from "../../utilsQuery/usePost";
+import Button from "../../ui/Button";
 import PostModal from "../../components/postModal";
-import { IPost } from "../../types/postData";
+import { TPost } from "../../types/postData";
 
 const Profile = (): JSX.Element => {
   const { cachedData } = useUser();
-  const [userPosts, setUserPosts] = useState<IPost[] | undefined>(undefined);
+  const [userPosts, setUserPosts] = useState<TPost[] | undefined>(undefined);
   const [openPostId, setOpenPostId] = useState<string | null>(null);
 
   const { cachedUserPostsData } = useUserPosts();
