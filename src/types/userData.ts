@@ -1,7 +1,10 @@
+import { TPostsData } from "./postData";
+
 export interface TUserData {
   message?: string;
-  posts?: string[];
+  posts?: TPostsData;
   user: {
+    _id: string;
     username: string;
     new_username: string;
     email: string;
@@ -15,7 +18,7 @@ export interface TUserData {
     followingCount: number;
     following: string[];
     postsCount: number;
-    posts: string[];
+    posts: TPostsData;
     resetPasswordToken?: string;
     resetPasswordExpiresAt?: Date;
     verificationToken?: string;

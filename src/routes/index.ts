@@ -53,9 +53,9 @@ const messagesRoute = createRoute({
   component: Messages,
 });
 
-const profileRoute = createRoute({
+export const profileByUsernameRoute = createRoute({
   getParentRoute: () => menuRoute,
-  path: "profile",
+  path: "$username",
   component: Profile,
 });
 
@@ -91,7 +91,7 @@ export const router = createRouter({
         searchRoute,
         exploreRoute,
         messagesRoute,
-        profileRoute,
+        profileByUsernameRoute,
         profileEditRoute,
         notFoundRoute,
       ]),

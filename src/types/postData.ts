@@ -11,6 +11,5 @@ export interface TPostData {
 }
 
 export interface TPostsData {
-  message: string;
   posts: TPost[];
 }

@@ -1,17 +1,71 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { profileByUsernameRoute } from "../../routes";
 import { useUser } from "../../utilsQuery/useUser";
 import { useUserPosts } from "../../utilsQuery/usePost";
 import Button from "../../ui/Button";
 import PostModal from "../../components/postModal";
-import { TPost } from "../../types/postData";
+import { TPostsData } from "../../types/postData";
+import { TUserData } from "../../types/userData";
+import { jwtDecode } from "jwt-decode";
+import { DecodedToken } from "../../utilsQuery/usePost";
 
 const Profile = (): JSX.Element => {
-  const { cachedData } = useUser();
-  const [userPosts, setUserPosts] = useState<TPost[] | undefined>(undefined);
+  const { username }: { username: string } = profileByUsernameRoute.useParams();
+  const { cachedData, fetchUserData } = useUser();
+  const { fetchPosts } = useUserPosts();
+  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const [userData, setUserData] = useState<TUserData | undefined>(undefined);
+  const [userPosts, setUserPosts] = useState<TPostsData | undefined>(undefined);
   const [openPostId, setOpenPostId] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
-  const { cachedUserPostsData } = useUserPosts();
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (token) {
+      const userIdToken = jwtDecode<DecodedToken>(token);
+      const userAdminId = userIdToken.id;
+
+      if (userId === userAdminId) {
+        setIsAdmin(true);
+      }
+    }
+  }, [token, userId]);
+
+  useEffect(() => {
+    const id = userData?.user._id;
+    setUserId(id);
+  }, [userData?.user._id]);
+
+  useEffect(() => {
+    const fetchUserPosts = async () => {
+      try {
+        if (userId) {
+          const response = await fetchPosts(userId);
+          setUserPosts(response);
+        }
+        return;
+      } catch (err) {
+        console.error("Error fetching user posts", err);
+      }
+    };
+    fetchUserPosts();
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await fetchUserData(username);
+        setUserData(result);
+      } catch (err) {
+        console.error(`Error fetching ${username} data:`, err);
+      }
+    };
+    if (username) {
+      fetchData();
+    }
+  }, [username]);
 
   function handleClick(postId: string): void {
     setOpenPostId(postId);
@@ -21,22 +75,11 @@ const Profile = (): JSX.Element => {
     setOpenPostId(null);
   }
 
-  useEffect(() => {
-    if (cachedUserPostsData?.posts) {
-      setUserPosts(
-        Array.isArray(cachedUserPostsData.posts)
-          ? cachedUserPostsData.posts
-          : [cachedUserPostsData.posts],
-      );
-    }
-  }, [cachedUserPostsData]);
-
   const navigate = useNavigate();
   function toEdit() {
     navigate({ to: "/edit" });
   }
 
-  //to add pending and errors
   return (
     <div className="w-[908px]">
       <header className="flex gap-20">
@@ -46,38 +89,54 @@ const Profile = (): JSX.Element => {
 
         <section className="grid gap-6">
           <div className="flex items-center gap-6">
-            <p>{cachedData?.user.username}</p>
-            <Button variant="profile" onClick={toEdit}>
-              Edit profile
-            </Button>
+            <p>
+              {userData ? userData.user.username : cachedData?.user.username}
+            </p>
+            {isAdmin && (
+              <Button variant="profile" onClick={toEdit}>
+                Edit profile
+              </Button>
+            )}
           </div>
           <div className="flex gap-6 text">
             <div className="flex gap-2">
-              <p>{cachedData?.user.postsCount}</p>
+              <p>
+                {userData
+                  ? userData.user.postsCount
+                  : cachedData?.user.postsCount}
+              </p>
               <p>posts</p>
             </div>
             <div className="flex gap-2">
-              <p>{cachedData?.user.followersCount}</p>
+              <p>
+                {userData
+                  ? userData.user.followersCount
+                  : cachedData?.user.followersCount}
+              </p>
               <p>folowers</p>
             </div>
             <div className="flex gap-2">
-              <p>{cachedData?.user.followingCount}</p>
+              <p>
+                {userData
+                  ? userData.user.followingCount
+                  : cachedData?.user.followingCount}
+              </p>
               <p>folowing</p>
             </div>
           </div>
           <div>
-            <p>{cachedData?.user.bio}</p>
+            <p>{userData ? userData.user.bio : cachedData?.user.bio}</p>
           </div>
           <div>
             <a className="text-blue-900 font-semibold" href="">
-              {cachedData?.user.website}
+              {userData ? userData.user.website : cachedData?.user.website}
             </a>
           </div>
         </section>
       </header>
 
       <main className="grid gap-1 mt-16 grid-cols-3 border-t pt-5">
-        {userPosts?.map((post) => (
+        {userPosts?.posts?.map((post) => (
           <div key={post._id}>
             <img
               onClick={() => handleClick(post._id)}

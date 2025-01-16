@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, MouseEvent } from "react";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import Notifications from "../notifications";
 import CreateModal from "../createModal";
@@ -17,12 +18,19 @@ import {
 import { useUser } from "../../utilsQuery/useUser";
 import { useUserPosts } from "../../utilsQuery/usePost";
 
+interface DecodedToken extends JwtPayload {
+  username: string;
+  userId: string;
+  exp: number;
+  iat: number;
+}
+
 const Menu = (): JSX.Element => {
   useUser();
   useUserPosts();
-  const { cachedData } = useUser();
-  console.log(cachedData);
 
+  const token = localStorage.getItem("token");
+  const [username, setUsername] = useState<string | null>(null);
   const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
@@ -41,6 +49,13 @@ const Menu = (): JSX.Element => {
   function toggleCreateModal(): void {
     setCreateModalOpen((prev) => !prev);
   }
+
+  useEffect(() => {
+    if (token) {
+      const decodedToken = jwtDecode<DecodedToken>(token);
+      setUsername(decodedToken.username);
+    }
+  }, [token]);
 
   useEffect(() => {
     function handleClickOutside(
@@ -115,7 +130,11 @@ const Menu = (): JSX.Element => {
             onClick={toggleCreateModal}
           />
 
-          <MenuItemLink name="Profile" icon={<ProfileIcon />} path="/profile" />
+          <MenuItemLink
+            name="Profile"
+            icon={<ProfileIcon />}
+            path={`/${username}`}
+          />
 
           <TanStackRouterDevtools />
         </main>

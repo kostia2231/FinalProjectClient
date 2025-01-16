@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { TPostsData } from "../types/postData";
 import { jwtDecode, JwtPayload } from "jwt-decode";
+import { TUserData } from "../types/userData";
 
-interface DecodedToken extends JwtPayload {
+export interface DecodedToken extends JwtPayload {
   username: string;
   id: string;
   exp: number;
@@ -12,33 +13,37 @@ interface DecodedToken extends JwtPayload {
 }
 
 export const useUserPosts = () => {
-  const [id, setId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
   const token = localStorage.getItem("token");
   const queryClient = useQueryClient();
 
   useEffect(() => {
     if (token) {
       const decodedToken = jwtDecode<DecodedToken>(token);
-      setId(decodedToken.id);
+      setUserId(decodedToken.id);
     }
   }, [token]);
 
-  const { data, error, isLoading, isFetching, refetch } = useQuery<TPostsData>({
-    queryKey: ["userPostsData"],
-    queryFn: async () => {
-      const response = await axios.get(`http://localhost:3333/post/all/${id}`, {
+  const fetchPosts = async (userId: string | undefined) => {
+    const response = await axios.get(
+      `http://localhost:3333/post/all/${userId}`,
+      {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
-      console.log(response.data);
+      },
+    );
 
-      return response.data;
-    },
-    enabled: !!id,
+    return response.data;
+  };
+
+  const { data, error, isLoading, isFetching, refetch } = useQuery<TPostsData>({
+    queryKey: ["userPostsData"],
+    queryFn: () => fetchPosts(userId),
+    enabled: !!userId,
   });
 
-  const cachedUserPostsData = queryClient.getQueryData<TPostsData>([
+  const cachedUserPostsData = queryClient.getQueryData<TUserData>([
     "userPostsData",
   ]);
   queryClient.invalidateQueries({ queryKey: "userData" });
@@ -50,6 +55,7 @@ export const useUserPosts = () => {
     isLoading,
     isFetching,
     cachedUserPostsData,
+    fetchPosts,
   };
 };
 
