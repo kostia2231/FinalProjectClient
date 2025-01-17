@@ -1,9 +1,8 @@
 import axios, { AxiosError } from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { TPostsData } from "../types/postData";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { TUserData } from "../types/userData";
 
 export interface DecodedToken extends JwtPayload {
   username: string;
@@ -24,26 +23,30 @@ export const useUserPosts = () => {
     }
   }, [token]);
 
-  const fetchPosts = async (userId: string | undefined) => {
-    const response = await axios.get(
-      `http://localhost:3333/post/all/${userId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
+  const fetchPosts = useCallback(
+    async (userId: string | undefined) => {
+      const response = await axios.get(
+        `http://localhost:3333/post/all/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      },
-    );
-
-    return response.data;
-  };
+      );
+      console.log("posts fetched");
+      return response.data;
+    },
+    [token],
+  );
 
   const { data, error, isLoading, isFetching, refetch } = useQuery<TPostsData>({
     queryKey: ["userPostsData"],
     queryFn: () => fetchPosts(userId),
+    staleTime: 60 * 1000,
     enabled: !!userId,
   });
 
-  const cachedUserPostsData = queryClient.getQueryData<TUserData>([
+  const cachedUserPostsData = queryClient.getQueryData<TPostsData>([
     "userPostsData",
   ]);
   queryClient.invalidateQueries({ queryKey: "userData" });

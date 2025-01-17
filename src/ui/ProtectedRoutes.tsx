@@ -1,6 +1,8 @@
 import { Outlet, Navigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import axios, { AxiosError } from "axios";
+import { jwtDecode } from "jwt-decode";
+import { DecodedToken } from "../utilsQuery/usePost";
 
 const ProtectedRoutes = () => {
   const [isVerified, setIsVerified] = useState<boolean | null>(null);
@@ -24,6 +26,9 @@ const ProtectedRoutes = () => {
           },
         );
         setIsVerified(response.data);
+        const decodedToken = jwtDecode<DecodedToken>(token);
+        const username = decodedToken.username;
+        localStorage.setItem("username", username);
       } catch (err) {
         console.error("verification error:", (err as AxiosError).message);
         setIsVerified(false);

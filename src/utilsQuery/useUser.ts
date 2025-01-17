@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios, { AxiosError } from "axios";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { TUserData } from "../types/userData";
@@ -27,19 +27,23 @@ export const useUser = () => {
     }
   }, [token]);
 
-  const fetchUserData = async (username: string | null) => {
-    if (!username) throw new Error("Username is required");
-    const response = await axios.get(`http://localhost:3333/${username}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  };
+  const fetchUserData = useCallback(
+    async (username: string | null) => {
+      if (!username) throw new Error("Username is required");
+      const response = await axios.get(`http://localhost:3333/${username}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    },
+    [token],
+  );
 
   const { data, error, isLoading, isFetching, refetch } = useQuery<TUserData>({
     queryKey: ["userData"],
     queryFn: () => fetchUserData(username),
+    staleTime: 60 * 1000,
     enabled: !!username,
   });
 

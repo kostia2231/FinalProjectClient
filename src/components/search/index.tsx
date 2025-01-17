@@ -1,5 +1,4 @@
 import { forwardRef, ChangeEvent, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
 import { searchUsers } from "../../utilsQuery/searchUsers";
 
 interface IUserResponce {
@@ -9,11 +8,12 @@ interface IUserResponce {
 }
 
 const Search = forwardRef<HTMLDivElement>((_, ref): JSX.Element => {
-  const navigate = useNavigate();
   const [users, setUsers] = useState<IUserResponce[] | null>(null);
 
   const handleClick = (username: string) => {
-    if (users) navigate({ to: `/${username}` });
+    if (users) {
+      window.location.replace(`http://localhost:5173/${username}`);
+    }
   };
 
   const handleInput = async (event: ChangeEvent<HTMLInputElement>) => {
