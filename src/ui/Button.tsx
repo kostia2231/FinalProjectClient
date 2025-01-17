@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { forwardRef, ButtonHTMLAttributes } from "react";
 
-type ButtonVariant =
+export type ButtonVariant =
   | "primary"
   | "profile"
   | "icon"

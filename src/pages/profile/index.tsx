@@ -7,6 +7,7 @@ import Button from "../../ui/Button";
 import PostModal from "../../components/postModal";
 import { TPostsData } from "../../types/postData";
 import { TUserData } from "../../types/userData";
+import { follow, unfollow } from "../../utilsQuery/subscription";
 
 const Profile = (): JSX.Element => {
   const { username }: { username: string } = profileByUsernameRoute.useParams();
@@ -75,6 +76,29 @@ const Profile = (): JSX.Element => {
     setOpenPostId(null);
   }
 
+  function handleFollow() {
+    if (!userId) return;
+    if (!userData.isFollowing) {
+      follow(userId).then(async () => {
+        try {
+          const result = await fetchUserData(username);
+          setUserData(result);
+        } catch (err) {
+          console.error(`error fetching ${username} data:`, err);
+        }
+      });
+    } else {
+      unfollow(userId).then(async () => {
+        try {
+          const result = await fetchUserData(username);
+          setUserData(result);
+        } catch (err) {
+          console.error(`error fetching ${username} data:`, err);
+        }
+      });
+    }
+  }
+
   const navigate = useNavigate();
   function toEdit() {
     navigate({ to: "/edit" });
@@ -99,7 +123,14 @@ const Profile = (): JSX.Element => {
                   Edit profile
                 </Button>
               )}
-              {!isAdmin && <Button variant="profilePrimary">Follow</Button>}
+              {!isAdmin && (
+                <Button
+                  variant={`${userData?.isFollowing ? "profile" : "profilePrimary"}`}
+                  onClick={handleFollow}
+                >
+                  {userData?.isFollowing ? "Unfollow" : "Follow"}
+                </Button>
+              )}
               {!isAdmin && <Button variant="profile">Message</Button>}
             </div>
             <div className="flex gap-6 text">

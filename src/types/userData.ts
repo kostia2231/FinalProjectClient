@@ -3,6 +3,7 @@ import { TPostsData } from "./postData";
 export interface TUserData {
   message?: string;
   posts?: TPostsData;
+  isFollowing: boolean;
   user: {
     _id: string;
     username: string;
