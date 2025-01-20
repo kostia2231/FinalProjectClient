@@ -7,6 +7,9 @@ import { useUserById } from "../../utilsQuery/useUser";
 import { NotificationIcon as LikeIcon } from "../../assets/menu_icons/MenuIcons";
 import Button from "../../ui/Button";
 import { like, unlike, likeStatus } from "../../utilsQuery/like";
+import { TCommentData } from "../../types/commentData";
+import { useComments } from "../../utilsQuery/useComments";
+import { useDeleteComment } from "../../utilsQuery/useComments";
 
 interface ICreateModal {
   isAdmin: boolean;
@@ -16,13 +19,22 @@ interface ICreateModal {
 }
 
 const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
-  const { data, isFetching, refetch } = useOnePost({ postId });
+  const { data, refetch } = useOnePost({ postId });
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const { data: userData } = useUserById({
     userId,
   });
+  const { data: commentsData, refetch: commentsRefetch } = useComments(postId);
+  const { mutateAsync } = useDeleteComment();
+  const [comments, setComments] = useState<TCommentData[]>([]);
+
+  console.log(commentsData, "comments");
+
+  useEffect(() => {
+    if (commentsData) setComments(commentsData.comments);
+  }, [commentsData]);
 
   useEffect(() => {
     const fetchLikeStatus = async () => {
@@ -97,9 +109,38 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
                     +++
                   </div>
                 </div>
-                <div className="p-3 flex gap-2">
-                  <div className="font-medium">{userData?.user.username}</div>
-                  <div>{data?.post.caption}</div>
+                <div className="p-3 flex gap-2 flex-col">
+                  <div className="flex gap-2">
+                    <div className="font-medium">{userData?.user.username}</div>
+                    <div>{data?.post.caption}</div>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    {comments.map((comment) => (
+                      <div key={comment._id} className="flex flex-col">
+                        <div className="flex gap-2">
+                          <div className="font-medium">
+                            {comment.userId.username}
+                          </div>
+                          <div>{comment.commentBody}</div>
+                          <div className="ml-auto">like</div>
+                        </div>
+                        <div className="flex gap-2">
+                          <div>- {comment.likesCount} likes</div>
+                          <div
+                            onClick={() => {
+                              mutateAsync(comment._id).then(() => {
+                                commentsRefetch();
+                              });
+                            }}
+                            className="cursor-pointer"
+                          >
+                            - delete
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
               <div className="mt-auto">
@@ -110,12 +151,15 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
                       icon={<LikeIcon />}
                       onClick={handleLike}
                       className={`${isLiked ? "text-red-500" : ""}`}
-                    ></Button>
+                    />
                   </span>
                   <p>{data?.post.likesCount} likes</p>
                 </div>
                 <div className="p-3 border-t">
-                  <InputComment />
+                  <InputComment
+                    postId={data?.post._id}
+                    refetch={commentsRefetch}
+                  />
                 </div>
               </div>
             </div>
