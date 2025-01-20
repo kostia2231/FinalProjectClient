@@ -1,5 +1,5 @@
 import { createPortal } from "react-dom";
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useMemo } from "react";
 import InputComment from "../../ui/InputComment";
 import PostEditModal from "../postEditModel";
 import { useOnePost } from "../../utilsQuery/useOnePost";
@@ -7,9 +7,16 @@ import { useUserById } from "../../utilsQuery/useUser";
 import { NotificationIcon as LikeIcon } from "../../assets/menu_icons/MenuIcons";
 import Button from "../../ui/Button";
 import { like, unlike, likeStatus } from "../../utilsQuery/like";
+import {
+  likeComment,
+  unlikeComment,
+  commentLikeStatus,
+} from "../../utilsQuery/commentLike";
 import { TCommentData } from "../../types/commentData";
 import { useComments } from "../../utilsQuery/useComments";
 import { useDeleteComment } from "../../utilsQuery/useComments";
+import TimeAgo from "javascript-time-ago";
+import en from "javascript-time-ago/locale/en";
 
 interface ICreateModal {
   isAdmin: boolean;
@@ -19,21 +26,45 @@ interface ICreateModal {
 }
 
 const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
-  const { data, refetch } = useOnePost({ postId });
-  const [userId, setUserId] = useState<string | undefined>(undefined);
-  const [isLiked, setIsLiked] = useState<boolean>(false);
+  TimeAgo.addLocale(en);
+  const timeAgo = new TimeAgo("en-US");
+
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-  const { data: userData } = useUserById({
-    userId,
-  });
+  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const { data, refetch } = useOnePost({ postId });
+  const { data: userData } = useUserById({ userId });
   const { data: commentsData, refetch: commentsRefetch } = useComments(postId);
   const { mutateAsync } = useDeleteComment();
+  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [commentLikes, setCommentLikes] = useState<Record<string, boolean>>({});
   const [comments, setComments] = useState<TCommentData[]>([]);
 
-  console.log(commentsData, "comments");
+  const fetchCommentLikes = async (comments: TCommentData[]) => {
+    const updatedCommentLikes: Record<string, boolean> = {};
+
+    for (const comment of comments) {
+      try {
+        const status = await commentLikeStatus(comment._id);
+        updatedCommentLikes[comment._id] = status.isLiked;
+      } catch (error) {
+        console.error("error fetching comment like status:", error);
+      }
+    }
+
+    return updatedCommentLikes;
+  };
 
   useEffect(() => {
-    if (commentsData) setComments(commentsData.comments);
+    const fetchData = async () => {
+      if (commentsData) {
+        setComments(commentsData.comments);
+
+        const likesStatus = await fetchCommentLikes(commentsData.comments);
+        setCommentLikes(likesStatus);
+      }
+    };
+
+    fetchData();
   }, [commentsData]);
 
   useEffect(() => {
@@ -51,6 +82,66 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
     }
   }, [data]);
 
+  const memoizedComments = useMemo(() => comments, [comments]);
+
+  const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  const toggleEditModal = () => {
+    setIsEditModalOpen((prev) => !prev);
+  };
+
+  const handleLike = async () => {
+    try {
+      if (!isLiked) {
+        await like(postId);
+      } else {
+        await unlike(postId);
+      }
+      setIsLiked((prev) => !prev);
+      refetch();
+    } catch (error) {
+      console.error("error liking post:", error);
+    }
+  };
+
+  const handleCommentLike = async (commentId: string) => {
+    try {
+      const newLikeStatus = !commentLikes[commentId];
+      setCommentLikes((prev) => ({
+        ...prev,
+        [commentId]: newLikeStatus,
+      }));
+
+      if (newLikeStatus) {
+        await likeComment(commentId);
+      } else {
+        await unlikeComment(commentId);
+      }
+
+      const status = await commentLikeStatus(commentId);
+      setCommentLikes((prev) => ({
+        ...prev,
+        [commentId]: status.isLiked,
+      }));
+      commentsRefetch();
+    } catch (error) {
+      console.error("error liking comment:", error);
+    }
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    try {
+      await mutateAsync(commentId);
+      commentsRefetch();
+    } catch (error) {
+      console.error("error deleting comment:", error);
+    }
+  };
+
   if (!isOpen) return null;
 
   const modalRoot = document.getElementById("post-modal");
@@ -58,27 +149,6 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
     console.error("element with id:post-modal not found.");
     return null;
   }
-
-  function handleModalClick(e: React.MouseEvent<HTMLDivElement>) {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  }
-
-  function toggleEditModal() {
-    setIsEditModalOpen((prev) => !prev);
-  }
-
-  const handleLike = async () => {
-    if (!isLiked) {
-      await like(postId);
-      refetch();
-    } else {
-      await unlike(postId);
-      refetch();
-    }
-    setIsLiked((prev) => !prev);
-  };
 
   return createPortal(
     <>
@@ -90,52 +160,80 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
           onClick={handleModalClick}
           className="h-full w-full flex justify-center items-center"
         >
-          (
           <div className="bg-white w-fit h-fit flex">
             <div>
               {data?.post.imgUrls.map((imgUrl) => (
                 <img
                   key={data.post._id}
                   src={imgUrl}
-                  className="h-[500px] w-[500px] object-cover"
+                  className="h-[600px] w-[600px] object-cover"
                 />
               ))}
             </div>
-            <div className="text-sm w-[300px] flex flex-col">
+            <div className="text-sm w-[400px] flex flex-col">
               <div>
                 <div className="flex justify-between gap-6 border-b p-3">
-                  <div className="font-medium">{userData?.user.username}</div>
+                  <div className="font-medium flex items-center gap-3">
+                    <div className="w-6 h-6 border rounded-full" />
+                    <div>{userData?.user.username}</div>
+                  </div>
                   <div onClick={toggleEditModal} className="cursor-pointer">
                     +++
                   </div>
                 </div>
-                <div className="p-3 flex gap-2 flex-col">
-                  <div className="flex gap-2">
-                    <div className="font-medium">{userData?.user.username}</div>
-                    <div>{data?.post.caption}</div>
+                <div className="p-3 flex gap-8 flex-col">
+                  <div className="flex gap-3 flex-col">
+                    <div className="flex gap-3 items-start">
+                      <div>
+                        <div className="w-6 h-6 border rounded-full" />
+                      </div>
+
+                      <div className="flex flex-col gap-2">
+                        <div className="flex gap-3">
+                          <div className="font-medium">
+                            {userData?.user.username}
+                          </div>
+                          <div> {data?.post.caption}</div>
+                        </div>
+
+                        {/* <div className="text-xs text-gray-400">
+                          {timeAgo.format(new Date(data?.post.createdAt))}
+                        </div> */}
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-2">
-                    {comments.map((comment) => (
-                      <div key={comment._id} className="flex flex-col">
-                        <div className="flex gap-2">
-                          <div className="font-medium">
-                            {comment.userId.username}
-                          </div>
-                          <div>{comment.commentBody}</div>
-                          <div className="ml-auto">like</div>
+                  <div className="flex flex-col gap-4">
+                    {memoizedComments.map((comment) => (
+                      <div key={comment._id} className="flex gap-3">
+                        <div>
+                          <div className="w-6 h-6 border rounded-full" />
                         </div>
-                        <div className="flex gap-2">
-                          <div>- {comment.likesCount} likes</div>
-                          <div
-                            onClick={() => {
-                              mutateAsync(comment._id).then(() => {
-                                commentsRefetch();
-                              });
-                            }}
-                            className="cursor-pointer"
-                          >
-                            - delete
+
+                        <div className="flex flex-col w-full gap-2">
+                          <div className="flex gap-3 items-start">
+                            <div className="font-medium">
+                              {comment.userId.username}
+                            </div>
+                            <div>{comment.commentBody}</div>
+                            <div
+                              className="ml-auto cursor-pointer text-xs text-gray-400"
+                              onClick={() => handleCommentLike(comment._id)}
+                            >
+                              {commentLikes[comment._id] ? "Liked" : "Like"}
+                            </div>
+                          </div>
+                          <div className="flex gap-4 text-gray-400 text-xs items-end">
+                            <div>
+                              {timeAgo.format(new Date(comment.createdAt))}
+                            </div>
+                            <div>Likes: {comment.likesCount}</div>
+                            <div
+                              onClick={() => handleDeleteComment(comment._id)}
+                              className="cursor-pointer text-gray-400 text-xs"
+                            >
+                              Delete
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -164,7 +262,6 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
               </div>
             </div>
           </div>
-          )
         </div>
 
         {isEditModalOpen && (
