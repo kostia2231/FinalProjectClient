@@ -10,8 +10,8 @@ export const useOnePost = ({ postId }: UseOnePostProps) => {
   const token = localStorage.getItem("token");
   const queryClient = useQueryClient();
 
-  const { data, error, isLoading, isFetching, isPending } = useQuery<TPostData>(
-    {
+  const { data, error, isLoading, isFetching, isPending, refetch } =
+    useQuery<TPostData>({
       queryKey: ["userOnePostData"],
       queryFn: async () => {
         const response = await axios.get(
@@ -27,14 +27,14 @@ export const useOnePost = ({ postId }: UseOnePostProps) => {
         return response.data;
       },
       enabled: !!postId,
-    },
-  );
+    });
 
   const cachedUserPostsData = queryClient.getQueryData<TPostData>([
     "userOnePostData",
   ]);
   return {
     data,
+    refetch,
     error,
     isLoading,
     isFetching,

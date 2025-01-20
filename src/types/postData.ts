@@ -3,6 +3,8 @@ export interface TPost {
   userId: string;
   caption?: string;
   imgUrls: string[];
+  likesCount: number;
+  likes: string[];
 }
 
 export interface TPostData {

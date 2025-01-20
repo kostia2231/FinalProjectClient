@@ -128,7 +128,7 @@ const Profile = (): JSX.Element => {
                   variant={`${userData?.isFollowing ? "profile" : "profilePrimary"}`}
                   onClick={handleFollow}
                 >
-                  {userData?.isFollowing ? "Unfollow" : "Follow"}
+                  {userData?.isFollowing ? "Followed" : "Follow"}
                 </Button>
               )}
               {!isAdmin && <Button variant="profile">Message</Button>}

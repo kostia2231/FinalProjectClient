@@ -37,7 +37,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         "bg-blue-500 text-white py-2 px-9 rounded-lg text-sm font-semibold hover:bg-blue-300",
       link: "h-fit w-fit h-fit font-medium text-blue-400 hover:text-blue-300 ",
       edit: "w-[300px] p-4 border-t text-black hover:text-opacity-50",
-      icon: "h-10 w-10 bg-green-500",
+      icon: "h-fit w-fit",
     };
 
     const buttonClass = clsx(styles[variant], className);
