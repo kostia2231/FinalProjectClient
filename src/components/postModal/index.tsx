@@ -228,12 +228,14 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
                               {timeAgo.format(new Date(comment.createdAt))}
                             </div>
                             <div>Likes: {comment.likesCount}</div>
-                            <div
-                              onClick={() => handleDeleteComment(comment._id)}
-                              className="cursor-pointer text-gray-400 text-xs"
-                            >
-                              Delete
-                            </div>
+                            {comment.userId._id === userId && (
+                              <div
+                                onClick={() => handleDeleteComment(comment._id)}
+                                className="cursor-pointer text-gray-400 text-xs"
+                              >
+                                Delete
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>

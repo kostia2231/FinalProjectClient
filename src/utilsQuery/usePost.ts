@@ -33,7 +33,6 @@ export const useUserPosts = () => {
           },
         },
       );
-      console.log("posts fetched");
       return response.data;
     },
     [token],
