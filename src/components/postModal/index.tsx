@@ -1,5 +1,6 @@
 import { createPortal } from "react-dom";
 import { FC, useState, useEffect, useMemo } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import InputComment from "../../ui/InputComment";
 import PostEditModal from "../postEditModel";
 import { useOnePost } from "../../utilsQuery/useOnePost";
@@ -17,24 +18,31 @@ import { useComments } from "../../utilsQuery/useComments";
 import { useDeleteComment } from "../../utilsQuery/useComments";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
+import { TUserData } from "../../types/userData";
 
-interface ICreateModal {
-  isAdmin: boolean;
-  isOpen: boolean;
+export interface ICreateModal {
+  isOwner?: boolean;
   onClose: () => void;
   postId: string;
 }
 
-const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
+const PostModal: FC<ICreateModal> = ({ onClose, postId }) => {
+  const navigate = useNavigate();
   TimeAgo.addLocale(en);
   const timeAgo = new TimeAgo("en-US");
+  const ownerUserId = localStorage.getItem("userId");
 
+  const [isOwner, setIsOwner] = useState<boolean>(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [userId, setUserId] = useState<string | undefined>(undefined);
+
   const { data, refetch } = useOnePost({ postId });
-  const { data: userData } = useUserById({ userId });
+  const { fetchUserById } = useUserById({ userId });
+  const [userData, setUserData] = useState<TUserData | null>(null);
+
   const { data: commentsData, refetch: commentsRefetch } = useComments(postId);
   const { mutateAsync } = useDeleteComment();
+
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [commentLikes, setCommentLikes] = useState<Record<string, boolean>>({});
   const [comments, setComments] = useState<TCommentData[]>([]);
@@ -53,6 +61,21 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
 
     return updatedCommentLikes;
   };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (userId) {
+        try {
+          const user = await fetchUserById(userId);
+          setUserData(user);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [userId, fetchUserById]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,12 +100,24 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
   }, [postId]);
 
   useEffect(() => {
-    if (data?.post.userId) {
+    if (data) {
       setUserId(data.post.userId);
     }
   }, [data]);
 
+  useEffect(() => {
+    if (data?.post.userId === ownerUserId) {
+      setIsOwner(true);
+    } else {
+      setIsOwner(false);
+    }
+  }, [ownerUserId, data?.post.userId]);
+
   const memoizedComments = useMemo(() => comments, [comments]);
+
+  function toUser(userId: string | undefined) {
+    navigate({ to: `/${userId}` });
+  }
 
   const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -142,8 +177,6 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
     }
   };
 
-  if (!isOpen) return null;
-
   const modalRoot = document.getElementById("post-modal");
   if (!modalRoot) {
     console.error("element with id:post-modal not found.");
@@ -175,7 +208,12 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
                 <div className="flex justify-between gap-6 border-b p-3">
                   <div className="font-medium flex items-center gap-3">
                     <div className="w-6 h-6 border rounded-full" />
-                    <div>{userData?.user.username}</div>
+                    <div
+                      onClick={() => toUser(userData?.user.username)}
+                      className="cursor-pointer"
+                    >
+                      {userData?.user.username}
+                    </div>
                   </div>
                   <div onClick={toggleEditModal} className="cursor-pointer">
                     +++
@@ -190,15 +228,20 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
 
                       <div className="flex flex-col gap-2">
                         <div className="flex gap-3">
-                          <div className="font-medium">
+                          <div
+                            className="font-medium cursor-pointer"
+                            onClick={() => toUser(userData?.user.username)}
+                          >
                             {userData?.user.username}
                           </div>
                           <div> {data?.post.caption}</div>
                         </div>
 
-                        {/* <div className="text-xs text-gray-400">
-                          {timeAgo.format(new Date(data?.post.createdAt))}
-                        </div> */}
+                        <div className="text-xs text-gray-400">
+                          {timeAgo.format(
+                            new Date(data?.post.createdAt ?? new Date()),
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -212,7 +255,10 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
 
                         <div className="flex flex-col w-full gap-2">
                           <div className="flex gap-3 items-start">
-                            <div className="font-medium">
+                            <div
+                              className="font-medium cursor-pointer"
+                              onClick={() => toUser(comment.userId.username)}
+                            >
                               {comment.userId.username}
                             </div>
                             <div>{comment.commentBody}</div>
@@ -228,7 +274,7 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
                               {timeAgo.format(new Date(comment.createdAt))}
                             </div>
                             <div>Likes: {comment.likesCount}</div>
-                            {comment.userId._id === userId && (
+                            {comment.userId._id === ownerUserId && (
                               <div
                                 onClick={() => handleDeleteComment(comment._id)}
                                 className="cursor-pointer text-gray-400 text-xs"
@@ -268,7 +314,7 @@ const PostModal: FC<ICreateModal> = ({ isAdmin, isOpen, onClose, postId }) => {
 
         {isEditModalOpen && (
           <PostEditModal
-            isAdmin={isAdmin}
+            isOwner={isOwner}
             isOpen={isEditModalOpen}
             onClose={toggleEditModal}
             postId={postId}

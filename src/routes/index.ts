@@ -8,12 +8,12 @@ import Home from "../pages/home";
 import LogIn from "../pages/login";
 import SignIn from "../pages/signIn";
 import Main from "../pages/main";
-import Search from "../pages/search";
 import Explore from "../pages/explore";
 import Messages from "../pages/messages";
 import Profile from "../pages/profile";
 import ProfileEdit from "../pages/profileEdit";
 import NotFound from "../pages/404";
+import PostModalWrapper from "../pages/postModalWrapper";
 
 const rootRoute = createRootRoute();
 
@@ -33,12 +33,6 @@ const indexRoute = createRoute({
   getParentRoute: () => menuRoute,
   path: "/",
   component: Home,
-});
-
-const searchRoute = createRoute({
-  getParentRoute: () => menuRoute,
-  path: "search",
-  component: Search,
 });
 
 const exploreRoute = createRoute({
@@ -65,6 +59,12 @@ const profileEditRoute = createRoute({
   component: ProfileEdit,
 });
 
+export const postModalWrapperRoute = createRoute({
+  getParentRoute: () => menuRoute,
+  path: "post/$postId",
+  component: PostModalWrapper,
+});
+
 const notFoundRoute = createRoute({
   getParentRoute: () => menuRoute,
   path: "*",
@@ -88,11 +88,11 @@ export const router = createRouter({
     rootProtected.addChildren([
       menuRoute.addChildren([
         indexRoute,
-        searchRoute,
         exploreRoute,
         messagesRoute,
         profileByUsernameRoute,
         profileEditRoute,
+        postModalWrapperRoute,
         notFoundRoute,
       ]),
     ]),

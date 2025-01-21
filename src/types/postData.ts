@@ -5,6 +5,8 @@ export interface TPost {
   imgUrls: string[];
   likesCount: number;
   likes: string[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface TPostData {

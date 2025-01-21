@@ -4,21 +4,19 @@ import Button from "../../ui/Button";
 import { useDeleteOnePost } from "../../utilsQuery/usePost";
 
 interface IEditModal {
-  isAdmin: boolean;
+  isOwner: boolean;
   isOpen: boolean;
   onClose: () => void;
   postId?: string;
 }
 
 const PostEditModal: FC<IEditModal> = ({
-  isAdmin,
+  isOwner,
   isOpen,
   onClose,
   postId,
 }) => {
-  console.log(postId);
   const { deletePost } = useDeleteOnePost();
-
   if (!isOpen) return null;
 
   const modalRoot = document.getElementById("post-edit-modal");
@@ -49,7 +47,7 @@ const PostEditModal: FC<IEditModal> = ({
         className="h-full w-full flex justify-center items-center"
       >
         <div className="bg-white rounded-[16px] flex flex-col">
-          {isAdmin && (
+          {isOwner && (
             <>
               <Button
                 onClick={handleDelete}
@@ -64,7 +62,7 @@ const PostEditModal: FC<IEditModal> = ({
           <Button variant="edit" className="border-none">
             Copy Link
           </Button>
-          {isAdmin && <Button variant="edit">Edit</Button>}
+          {isOwner && <Button variant="edit">Edit</Button>}
           <Button onClick={onClose} variant="edit">
             Cancel
           </Button>

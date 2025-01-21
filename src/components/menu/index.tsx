@@ -20,7 +20,7 @@ import { useUserPosts } from "../../utilsQuery/usePost";
 
 interface DecodedToken extends JwtPayload {
   username: string;
-  userId: string;
+  id: string;
   exp: number;
   iat: number;
 }
@@ -54,6 +54,7 @@ const Menu = (): JSX.Element => {
     if (token) {
       const decodedToken = jwtDecode<DecodedToken>(token);
       setUsername(decodedToken.username);
+      localStorage.setItem("userId", decodedToken.id);
     }
   }, [token]);
 

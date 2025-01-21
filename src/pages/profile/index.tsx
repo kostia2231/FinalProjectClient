@@ -4,7 +4,6 @@ import { profileByUsernameRoute } from "../../routes";
 import { useUser } from "../../utilsQuery/useUser";
 import { useUserPosts } from "../../utilsQuery/usePost";
 import Button from "../../ui/Button";
-import PostModal from "../../components/postModal";
 import { TPostsData } from "../../types/postData";
 import { TUserData } from "../../types/userData";
 import { follow, unfollow } from "../../utilsQuery/subscription";
@@ -15,7 +14,6 @@ const Profile = (): JSX.Element => {
   const { fetchPosts, cachedUserPostsData } = useUserPosts();
   const [userData, setUserData] = useState<TUserData | undefined>(undefined);
   const [userPosts, setUserPosts] = useState<TPostsData | undefined>(undefined);
-  const [openPostId, setOpenPostId] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   const usernameToken = localStorage.getItem("username");
@@ -68,14 +66,6 @@ const Profile = (): JSX.Element => {
     };
   }, [userId, fetchPosts, isAdmin]);
 
-  function handleClick(postId: string): void {
-    setOpenPostId(postId);
-  }
-
-  function closeModal(): void {
-    setOpenPostId(null);
-  }
-
   function handleFollow() {
     if (!userId) return;
     if (!userData.isFollowing) {
@@ -102,6 +92,10 @@ const Profile = (): JSX.Element => {
   const navigate = useNavigate();
   function toEdit() {
     navigate({ to: "/edit" });
+  }
+
+  function toPost(postId: string) {
+    navigate({ to: `/post/${postId}` });
   }
 
   const postsToRender = isAdmin ? cachedUserPostsData?.posts : userPosts?.posts;
@@ -170,19 +164,11 @@ const Profile = (): JSX.Element => {
             postsToRender.map((post) => (
               <div key={post._id}>
                 <img
-                  onClick={() => handleClick(post._id)}
+                  onClick={() => toPost(post._id)}
                   className="h-[300px] w-[300px] object-cover cursor-pointer"
                   src={post.imgUrls[0]}
                   alt={`Post ${post._id}`}
                 />
-                {openPostId === post._id && (
-                  <PostModal
-                    isAdmin={isAdmin}
-                    isOpen={!!openPostId}
-                    onClose={closeModal}
-                    postId={post._id}
-                  />
-                )}
               </div>
             ))
           ) : (

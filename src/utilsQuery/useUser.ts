@@ -91,9 +91,9 @@ export const useUserById = ({ userId }: UseUserId) => {
   const token = localStorage.getItem("token");
   const queryClient = useQueryClient();
 
-  const { data, error, isLoading, isFetching } = useQuery<TUserData>({
-    queryKey: ["userData"],
-    queryFn: async () => {
+  const fetchUserById = useCallback(
+    async (userId: string | undefined) => {
+      if (!userId) throw new Error("User ID is required");
       const response = await axios.get(`http://localhost:3333/id/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -101,10 +101,18 @@ export const useUserById = ({ userId }: UseUserId) => {
       });
       return response.data;
     },
+    [token],
+  );
+
+  const { data, error, isLoading, isFetching } = useQuery<TUserData>({
+    queryKey: ["userData", userId],
+    queryFn: () => fetchUserById(userId),
     enabled: !!userId,
   });
-  const cachedData = queryClient.getQueryData<TUserData>(["userData"]);
+
+  const cachedData = queryClient.getQueryData<TUserData>(["userData", userId]);
   return {
+    fetchUserById,
     cachedData,
     data,
     error,
