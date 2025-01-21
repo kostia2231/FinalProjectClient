@@ -37,6 +37,17 @@ const PostEditModal: FC<IEditModal> = ({
     }
   }
 
+  async function handleCopyLink() {
+    if (postId) {
+      const postLink = `http://localhost:5173/post/${postId}`;
+      try {
+        await navigator.clipboard.writeText(postLink);
+      } catch (error) {
+        console.error("Failed to copy link:", error);
+      }
+    }
+  }
+
   return createPortal(
     <div
       className="fixed h-full w-full z-2 top-0 ring-0 bg-black/70 overflow-auto"
@@ -59,7 +70,11 @@ const PostEditModal: FC<IEditModal> = ({
               <hr />
             </>
           )}
-          <Button variant="edit" className="border-none">
+          <Button
+            variant="edit"
+            className="border-none"
+            onClick={handleCopyLink}
+          >
             Copy Link
           </Button>
           {isOwner && <Button variant="edit">Edit</Button>}
