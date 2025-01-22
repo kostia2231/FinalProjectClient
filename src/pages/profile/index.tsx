@@ -117,29 +117,34 @@ const Profile = (): JSX.Element => {
             <section>
               <div className="w-[120px] h-[120px] bg-white border rounded-full" />
             </section>
-            <section className="grid gap-6">
-              <div className="flex items-center gap-6">
-                <p>{headerData ? headerData.user.username : "Loading..."}</p>
+            <section className="grid gap-6 w-full">
+              <div className="flex items-center">
+                <div className="flex items-center gap-6">
+                  <p>{headerData ? headerData.user.username : "Loading..."}</p>
+                  {isAdmin && (
+                    <Button variant="profile" onClick={toEdit}>
+                      Edit profile
+                    </Button>
+                  )}
+
+                  {!isAdmin && (
+                    <Button
+                      variant={`${userData?.isFollowing ? "profile" : "profilePrimary"}`}
+                      onClick={handleFollow}
+                    >
+                      {userData?.isFollowing ? "Followed" : "Follow"}
+                    </Button>
+                  )}
+                  {!isAdmin && <Button variant="profile">Message</Button>}
+                </div>
                 {isAdmin && (
-                  <Button variant="profile" onClick={toEdit}>
-                    Edit profile
-                  </Button>
-                )}
-                {isAdmin && (
-                  <div className="cursor-pointer" onClick={toggleCreateModal}>
-                    +++
+                  <div
+                    className="cursor-pointer ml-auto text-[8px]"
+                    onClick={toggleCreateModal}
+                  >
+                    ● ● ●
                   </div>
                 )}
-
-                {!isAdmin && (
-                  <Button
-                    variant={`${userData?.isFollowing ? "profile" : "profilePrimary"}`}
-                    onClick={handleFollow}
-                  >
-                    {userData?.isFollowing ? "Followed" : "Follow"}
-                  </Button>
-                )}
-                {!isAdmin && <Button variant="profile">Message</Button>}
               </div>
               <div className="flex gap-6 text">
                 <div className="flex gap-2">

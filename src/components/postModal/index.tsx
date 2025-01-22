@@ -215,8 +215,11 @@ const PostModal: FC<ICreateModal> = ({ onClose, postId }) => {
                       {userData?.user.username}
                     </div>
                   </div>
-                  <div onClick={toggleEditModal} className="cursor-pointer">
-                    +++
+                  <div
+                    onClick={toggleEditModal}
+                    className="cursor-pointer text-[8px]"
+                  >
+                    ● ● ●
                   </div>
                 </div>
                 <div className="p-3 flex gap-8 flex-col">

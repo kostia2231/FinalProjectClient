@@ -2,13 +2,15 @@
 
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
+import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { NotificationIcon as LikeIcon } from "../../assets/menu_icons/MenuIcons";
-import { MessageIcon } from "../../assets/menu_icons/MenuIcons";
+// import { MessageIcon } from "../../assets/menu_icons/MenuIcons";
 import { usePostFollowing } from "../../utilsQuery/usePostFollowing";
 import { like, unlike, likeStatus } from "../../utilsQuery/like";
 
 const Home = () => {
+  const navigate = useNavigate();
   TimeAgo.addLocale(en);
   const timeAgo = new TimeAgo("en-US");
   const { data: postsFollowingData, refetch } = usePostFollowing();
@@ -49,6 +51,14 @@ const Home = () => {
     });
   }, [postsFollowingData]);
 
+  function toUser(username: string | undefined) {
+    navigate({ to: `/${username}` });
+  }
+
+  function toPost(postId: string | undefined) {
+    navigate({ to: `/post/${postId}` });
+  }
+
   return (
     <>
       <div>
@@ -62,7 +72,13 @@ const Home = () => {
             <div key={post._id} className="flex flex-col gap-3">
               <div className="flex items-center gap-3 h-fit">
                 <div className="h-7 w-7 border rounded-full" />
-                <p className="font-medium">{post.user.username}</p>
+                <div
+                  className="font-medium cursor-pointer"
+                  onClick={() => toUser(post.user.username)}
+                >
+                  {post.user.username}
+                </div>
+                <div className="text-gray-400">•</div>
                 <p className="text-gray-400 text-sm font-light">
                   {timeAgo.format(new Date(post.createdAt ?? new Date()))}
                 </p>
@@ -83,14 +99,24 @@ const Home = () => {
                   className={`cursor-pointer ${likedPosts.has(post._id) ? "text-red-500" : ""}`}
                 />
 
-                <MessageIcon />
+                {/* <MessageIcon /> */}
               </div>
-              <div>{post.likesCount} Likes</div>
+              <div>
+                {post.likesCount} {post.likesCount === 1 ? "Like" : "Likes"}
+              </div>
               <div className="flex gap-3">
-                <p className="font-medium">{post.user.username}</p>
+                <div
+                  className="font-medium cursor-pointer"
+                  onClick={() => toUser(post.user.username)}
+                >
+                  {post.user.username}
+                </div>
                 <p>{post.caption}</p>
               </div>
-              <div className="text-gray-400">
+              <div
+                className="text-gray-400 cursor-pointer"
+                onClick={() => toPost(post._id)}
+              >
                 Show all comments ({post.commentsCount})
               </div>
               <hr />
