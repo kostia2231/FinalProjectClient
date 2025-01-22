@@ -1,4 +1,5 @@
 import { createPortal } from "react-dom";
+import Button from "../../ui/Button";
 import { FC } from "react";
 
 interface IProfileExitModal {
@@ -16,7 +17,9 @@ const ProfileExitModal: FC<IProfileExitModal> = ({ isOpen, onClose }) => {
     return null;
   }
 
-  function handleModalClick(e: React.MouseEvent<HTMLDivElement>) {
+  function handleModalClick(
+    e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>,
+  ) {
     if (e.target === e.currentTarget) {
       onClose();
     }
@@ -39,19 +42,17 @@ const ProfileExitModal: FC<IProfileExitModal> = ({ isOpen, onClose }) => {
         className="h-full w-full flex justify-center items-center"
         onClick={handleModalClick}
       >
-        <div className="bg-white rounded-[16px] flex flex-col w-fit h-fit p-10 gap-3">
-          <div
-            className="bg-red-500 text-center rounded-lg text-white cursor-pointer w-[200px] leading-10 hover:bg-red-400"
+        <div className="bg-white rounded-[16px] flex flex-col w-fit h-fit">
+          <Button
+            variant="edit"
+            className="border-none text-red-500"
             onClick={handleExit}
           >
             Exit
-          </div>
-          <div
-            className="bg-gray-100 text-center rounded-lg cursor-pointer w-[200px] leading-10"
-            onClick={handleModalClick}
-          >
+          </Button>
+          <Button variant="edit" onClick={handleModalClick}>
             Cancel
-          </div>
+          </Button>
         </div>
       </div>
     </div>,

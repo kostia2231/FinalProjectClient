@@ -17,6 +17,7 @@ import {
 } from "../../assets/menu_icons/MenuIcons";
 import { useUser } from "../../utilsQuery/useUser";
 import { useUserPosts } from "../../utilsQuery/usePost";
+import { usePostFollowing } from "../../utilsQuery/usePostFollowing";
 
 interface DecodedToken extends JwtPayload {
   username: string;
@@ -28,6 +29,7 @@ interface DecodedToken extends JwtPayload {
 const Menu = (): JSX.Element => {
   useUser();
   useUserPosts();
+  usePostFollowing();
 
   const token = localStorage.getItem("token");
   const [username, setUsername] = useState<string | null>(null);

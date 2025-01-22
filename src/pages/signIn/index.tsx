@@ -10,7 +10,7 @@ const SignIn = (): JSX.Element => {
             <FormSignIn />
           </div>
           <div className="flex w-full py-6 border items-center justify-center gap-2">
-            <div>Don't have an account?</div>
+            <div>Already have an account?</div>
             <div>
               <Link to="/login" className="text-blue-500 font-semibold">
                 Log in

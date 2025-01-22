@@ -27,6 +27,7 @@ const FormSignIn = (): JSX.Element => {
           );
 
           console.log("registration success:", response.data);
+          alert("registration successful! Proceed to LogIn");
           actions.resetForm();
         } catch (err) {
           if (axios.isAxiosError(err) && err.response) {
@@ -44,6 +45,7 @@ const FormSignIn = (): JSX.Element => {
 
   return (
     <>
+      <div className="text-center font-black">#NOTANINSTAGRAM</div>
       <div className="text-center pb-9">
         Sign up to see photos and videos from your friends.
       </div>

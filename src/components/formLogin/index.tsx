@@ -48,6 +48,8 @@ const FormLogIn = (): JSX.Element => {
         onSubmit={handleSubmit}
         className="flex flex-col w-full gap-4"
       >
+        <div className="text-center font-black mb-6">#NOTANINSTAGRAM</div>
+
         <div className="flex flex-col gap-2">
           <Input
             name="login"
