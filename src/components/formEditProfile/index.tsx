@@ -142,9 +142,13 @@ const FormProfileEdit = (): JSX.Element => {
           </div>
         </div>
 
-        <div className="w-[300px] mt-6">
+        <div className="flex gap-10 mt-4">
           <Button variant="primary" type="submit">
             {mutation.isPending ? "Updating..." : "Save"}
+          </Button>
+
+          <Button variant="delete" className="bg-red-500">
+            Delete
           </Button>
         </div>
         {message && (

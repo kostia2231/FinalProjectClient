@@ -109,8 +109,6 @@ const Profile = (): JSX.Element => {
 
   const headerData = isAdmin ? cachedData : userData;
 
-  console.log(userData?.user.profileImg);
-
   return (
     <div>
       <div className="w-[908px]">
