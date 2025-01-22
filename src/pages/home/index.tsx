@@ -1,29 +1,68 @@
+//нужно переделать колл-во лайков рендерит все посты заново -- нехорошо =)
+
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
+import { useState, useEffect } from "react";
 import { NotificationIcon as LikeIcon } from "../../assets/menu_icons/MenuIcons";
+import { MessageIcon } from "../../assets/menu_icons/MenuIcons";
 import { usePostFollowing } from "../../utilsQuery/usePostFollowing";
+import { like, unlike, likeStatus } from "../../utilsQuery/like";
 
 const Home = () => {
   TimeAgo.addLocale(en);
   const timeAgo = new TimeAgo("en-US");
+  const { data: postsFollowingData, refetch } = usePostFollowing();
+  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
 
-  const { data: postsFollowingData } = usePostFollowing();
-  console.log(postsFollowingData);
+  const checkLikeStatus = async (postId: string) => {
+    const status = await likeStatus(postId);
+    if (status?.isLiked) {
+      setLikedPosts((prev) => new Set(prev.add(postId)));
+    } else {
+      setLikedPosts((prev) => {
+        const updated = new Set(prev);
+        updated.delete(postId);
+        return updated;
+      });
+    }
+  };
 
-  function handleLike() {}
+  const handleLike = async (postId: string) => {
+    const isLiked = likedPosts.has(postId);
+
+    if (isLiked) {
+      await unlike(postId);
+      setLikedPosts((prev) => {
+        const updated = new Set(prev);
+        updated.delete(postId);
+        return updated;
+      });
+    } else {
+      await like(postId);
+      setLikedPosts((prev) => new Set(prev.add(postId)));
+    }
+  };
+
+  useEffect(() => {
+    postsFollowingData?.posts.forEach((post) => {
+      checkLikeStatus(post._id);
+    });
+  }, [postsFollowingData]);
+
   return (
     <>
       <div>
-        <div className="flex gap-3 pb-3 text-xl border-b mb-3">
+        <div className="flex gap-3 pb-3 text-lg border-b mb-3">
           <div className="font-medium">All time</div>
           <div className="font-medium text-black/20">Today</div>
         </div>
+
         <div className="grid-cols-1 gap-10 grid">
           {postsFollowingData?.posts.map((post) => (
             <div key={post._id} className="flex flex-col gap-3">
               <div className="flex items-center gap-3 h-fit">
                 <div className="h-7 w-7 border rounded-full" />
-                <p>{post.user.username}</p>
+                <p className="font-medium">{post.user.username}</p>
                 <p className="text-gray-400 text-sm font-light">
                   {timeAgo.format(new Date(post.createdAt ?? new Date()))}
                 </p>
@@ -34,12 +73,21 @@ const Home = () => {
                   className="object-cover h-full w-full rounded"
                 />
               </div>
-              <div>
-                <LikeIcon onClick={handleLike} />
+              <div className="flex gap-3">
+                <LikeIcon
+                  onClick={() =>
+                    handleLike(post._id).finally(() => {
+                      refetch();
+                    })
+                  }
+                  className={`cursor-pointer ${likedPosts.has(post._id) ? "text-red-500" : ""}`}
+                />
+
+                <MessageIcon />
               </div>
               <div>{post.likesCount} Likes</div>
               <div className="flex gap-3">
-                <p>{post.user.username}</p>
+                <p className="font-medium">{post.user.username}</p>
                 <p>{post.caption}</p>
               </div>
               <div className="text-gray-400">

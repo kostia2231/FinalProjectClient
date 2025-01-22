@@ -30,11 +30,11 @@ export const usePostFollowing = () => {
     }
   };
 
-  const { data, isFetching } = useQuery<IFollowingPosts>({
+  const { data, isFetching, refetch } = useQuery<IFollowingPosts>({
     queryKey: ["postsFollowing"],
     queryFn: fetchPostFollowing,
     enabled: !!userId,
   });
 
-  return { data, isFetching };
+  return { data, isFetching, refetch };
 };
