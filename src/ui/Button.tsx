@@ -1,7 +1,13 @@
 import clsx from "clsx";
 import { forwardRef, ButtonHTMLAttributes } from "react";
 
-type ButtonVariant = "primary" | "secondary" | "icon";
+export type ButtonVariant =
+  | "primary"
+  | "profile"
+  | "icon"
+  | "link"
+  | "edit"
+  | "profilePrimary";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -11,17 +17,30 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { type = "button", variant = "primary", children, onClick, icon, ...props },
+    {
+      type = "button",
+      variant = "primary",
+      children,
+      onClick,
+      icon,
+      className,
+      ...props
+    },
     ref,
-  ) => {
+  ): JSX.Element => {
     const styles = {
       primary:
-        "bg-blue-500 hover:bg-blue-400 active:bg-blue-300  text-white rounded-xl p-2 font-semibold",
-      secondary: "bg-transparent text-black p-2",
-      icon: "h-10 w-10 bg-green-500",
+        "bg-blue-500 hover:bg-blue-400 active:bg-blue-300 text-white rounded-xl p-2 font-medium w-full",
+      profile:
+        "bg-gray-100 text-black py-2 px-9 rounded-lg text-sm font-semibold",
+      profilePrimary:
+        "bg-blue-500 text-white py-2 px-9 rounded-lg text-sm font-semibold hover:bg-blue-300",
+      link: "h-fit w-fit h-fit font-medium text-blue-400 hover:text-blue-300 ",
+      edit: "w-[300px] p-4 border-t text-black hover:text-opacity-50",
+      icon: "h-fit w-fit",
     };
 
-    const buttonClass = clsx(styles[variant], "");
+    const buttonClass = clsx(styles[variant], className);
 
     return (
       <button

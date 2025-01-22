@@ -3,37 +3,37 @@ import {
   createRoute,
   createRootRoute,
 } from "@tanstack/react-router";
+import ProtectedRoutes from "../ui/ProtectedRoutes";
+import Home from "../pages/home";
 import LogIn from "../pages/login";
 import SignIn from "../pages/signIn";
-import Menu from "../components/menu";
 import Main from "../pages/main";
-import Search from "../pages/search";
 import Explore from "../pages/explore";
 import Messages from "../pages/messages";
-import Notification from "../pages/notification";
 import Profile from "../pages/profile";
+import ProfileEdit from "../pages/profileEdit";
+import NotFound from "../pages/404";
+import Reset from "../pages/reset";
+import PostModalWrapper from "../pages/postModalWrapper";
 
-//shared root
 const rootRoute = createRootRoute();
 
-//routes with menu
-const menuRoute = createRoute({
+const rootProtected = createRoute({
   getParentRoute: () => rootRoute,
-  id: "menu",
-  component: Menu,
+  id: "protected",
+  component: ProtectedRoutes,
 });
 
-//routes in the menu layout
-const indexRoute = createRoute({
-  getParentRoute: () => menuRoute,
-  path: "/",
+const menuRoute = createRoute({
+  getParentRoute: () => rootProtected,
+  id: "main",
   component: Main,
 });
 
-const searchRoute = createRoute({
+const indexRoute = createRoute({
   getParentRoute: () => menuRoute,
-  path: "search",
-  component: Search,
+  path: "/",
+  component: Home,
 });
 
 const exploreRoute = createRoute({
@@ -48,19 +48,30 @@ const messagesRoute = createRoute({
   component: Messages,
 });
 
-const notificationRoute = createRoute({
+export const profileByUsernameRoute = createRoute({
   getParentRoute: () => menuRoute,
-  path: "notification",
-  component: Notification,
-});
-
-const profileRoute = createRoute({
-  getParentRoute: () => menuRoute,
-  path: "profile",
+  path: "$username",
   component: Profile,
 });
 
-//routes without menu
+const profileEditRoute = createRoute({
+  getParentRoute: () => menuRoute,
+  path: "edit",
+  component: ProfileEdit,
+});
+
+export const postModalWrapperRoute = createRoute({
+  getParentRoute: () => menuRoute,
+  path: "post/$postId",
+  component: PostModalWrapper,
+});
+
+const notFoundRoute = createRoute({
+  getParentRoute: () => menuRoute,
+  path: "*",
+  component: NotFound,
+});
+
 const logInRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "login",
@@ -73,19 +84,27 @@ const signInRoute = createRoute({
   component: SignIn,
 });
 
+const resetPasswordRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "password-reset",
+  component: Reset,
+});
+
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
-    //menuMain
-    menuRoute.addChildren([
-      indexRoute,
-      searchRoute,
-      exploreRoute,
-      messagesRoute,
-      notificationRoute,
-      profileRoute,
+    rootProtected.addChildren([
+      menuRoute.addChildren([
+        indexRoute,
+        exploreRoute,
+        messagesRoute,
+        profileByUsernameRoute,
+        profileEditRoute,
+        postModalWrapperRoute,
+        notFoundRoute,
+      ]),
     ]),
-    //auth
     logInRoute,
     signInRoute,
+    resetPasswordRoute,
   ]),
 });

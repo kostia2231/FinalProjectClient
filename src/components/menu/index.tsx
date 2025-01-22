@@ -1,6 +1,11 @@
-import MenuItem from "../../ui/MenuItem";
-import { Outlet, Link } from "@tanstack/react-router";
+import { useState, useRef, useEffect, MouseEvent } from "react";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
+import Notifications from "../notifications";
+import CreateModal from "../createModal";
+import Search from "../search";
+import MenuItemLink from "../../ui/MenuItemLink";
+import MenuItem from "../../ui/MenuItem";
 import {
   HomeIcon,
   SearchIcon,
@@ -10,53 +15,145 @@ import {
   CreateIcon,
   ProfileIcon,
 } from "../../assets/menu_icons/MenuIcons";
+import { useUser } from "../../utilsQuery/useUser";
+import { useUserPosts } from "../../utilsQuery/usePost";
+import { usePostFollowing } from "../../utilsQuery/usePostFollowing";
 
-const Menu = () => {
+interface DecodedToken extends JwtPayload {
+  username: string;
+  id: string;
+  exp: number;
+  iat: number;
+}
+
+const Menu = (): JSX.Element => {
+  useUser();
+  useUserPosts();
+  usePostFollowing();
+
+  const token = localStorage.getItem("token");
+  const [username, setUsername] = useState<string | null>(null);
+  const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
+  const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+
+  const notificationsRef = useRef<HTMLDivElement | null>(null);
+  const searchRef = useRef<HTMLDivElement | null>(null);
+
+  function toggleNotification(): void {
+    setIsNotificationOpen((prev) => !prev);
+  }
+
+  function toggleSearch(): void {
+    setIsSearchOpen((prev) => !prev);
+  }
+
+  function toggleCreateModal(): void {
+    setCreateModalOpen((prev) => !prev);
+  }
+
+  useEffect(() => {
+    if (token) {
+      const decodedToken = jwtDecode<DecodedToken>(token);
+      setUsername(decodedToken.username);
+      localStorage.setItem("userId", decodedToken.id);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    function handleClickOutside(
+      event: MouseEvent | globalThis.MouseEvent,
+    ): void {
+      const target = event.target as HTMLElement;
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node) &&
+        !target.closest(".search-button")
+      ) {
+        setIsSearchOpen(false);
+      }
+    }
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(
+      event: MouseEvent | globalThis.MouseEvent,
+    ): void {
+      const target = event.target as HTMLElement;
+      if (
+        notificationsRef.current &&
+        !notificationsRef.current.contains(event.target as Node) &&
+        !target.closest(".notification-button")
+      ) {
+        setIsNotificationOpen(false);
+      }
+    }
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="flex flex-row w-screen">
-      <div className="fixed top-0 left-0 h-screen border-r w-[20%]">
-        <div className="flex flex-col m-3 gap-3">
-          <Link to="/">
-            <MenuItem name="Home" icon={<HomeIcon />} path="/" />
-          </Link>
+    <>
+      <div className="flex">
+        <main className="flex flex-col mx-3 gap-3 w-[200px] mt-3">
+          <MenuItemLink name="Home" icon={<HomeIcon />} path="/" />
 
-          <Link to="/search">
-            <MenuItem name="Search" icon={<SearchIcon />} path="/search" />
-          </Link>
+          <MenuItem
+            name="Search"
+            icon={<SearchIcon />}
+            onClick={toggleSearch}
+            className="search-button"
+          />
+          <MenuItemLink name="Explore" icon={<ExploreIcon />} path="/explore" />
 
-          <Link to="/explore">
-            <MenuItem name="Explore" icon={<ExploreIcon />} path="/explore" />
-          </Link>
+          <MenuItemLink
+            name="Messages"
+            icon={<MessagesIcon />}
+            path="/messages"
+          />
 
-          <Link to="/messages">
-            <MenuItem
-              name="Messages"
-              icon={<MessagesIcon />}
-              path="/messages"
-            />
-          </Link>
+          <MenuItem
+            name="Notifications"
+            icon={<NotificationIcon />}
+            onClick={toggleNotification}
+            className="notification-button"
+          />
 
-          <Link to="/notification">
-            <MenuItem
-              name="Notifications"
-              icon={<NotificationIcon />}
-              path="/notification"
-            />
-          </Link>
+          <MenuItem
+            name="Create"
+            icon={<CreateIcon />}
+            onClick={toggleCreateModal}
+          />
 
-          <MenuItem name="Create" icon={<CreateIcon />} path="create" />
-
-          <Link to="/profile">
-            <MenuItem name="Profile" icon={<ProfileIcon />} path="/profile" />
-          </Link>
+          <MenuItemLink
+            name="Profile"
+            icon={<ProfileIcon />}
+            path={`/${username}`}
+          />
 
           <TanStackRouterDevtools />
-        </div>
+        </main>
+
+        <div className="h-screen w-[1px] border-l" />
+
+        {isNotificationOpen && <Notifications ref={notificationsRef} />}
+
+        {isSearchOpen && <Search ref={searchRef} />}
+
+        <CreateModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setCreateModalOpen(false)}
+        />
       </div>
-      <div className="flex ml-[20%] pt-3 px-3 w-full">
-        <Outlet />
-      </div>
-    </div>
+    </>
   );
 };
 
