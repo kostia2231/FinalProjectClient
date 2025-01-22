@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useState } from "react";
 import { useFormik } from "formik";
 import { signUpSchema } from "../../schemas/signup";
 import Input from "../../ui/Input";
@@ -6,6 +7,7 @@ import Button from "../../ui/Button";
 import ErrorMessage from "../../ui/ErrorMessage";
 
 const FormSignIn = (): JSX.Element => {
+  const [errorMessage, setErrorMessage] = useState(null);
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: {
@@ -27,6 +29,7 @@ const FormSignIn = (): JSX.Element => {
           );
 
           console.log("registration success:", response.data);
+          setErrorMessage(null);
           alert("registration successful! Proceed to LogIn");
           actions.resetForm();
         } catch (err) {
@@ -35,6 +38,7 @@ const FormSignIn = (): JSX.Element => {
               "error while registring: ",
               err.response.data.message,
             );
+            setErrorMessage(err.response.data.message);
           } else {
             console.error("server error: ", (err as Error).message);
           }
@@ -105,6 +109,11 @@ const FormSignIn = (): JSX.Element => {
           ) : null}
         </div>
         <Button type="submit">Sign up</Button>
+        {errorMessage && (
+          <div>
+            <ErrorMessage>This {errorMessage}. Try again.</ErrorMessage>
+          </div>
+        )}
       </form>
     </>
   );

@@ -13,6 +13,7 @@ import Messages from "../pages/messages";
 import Profile from "../pages/profile";
 import ProfileEdit from "../pages/profileEdit";
 import NotFound from "../pages/404";
+import Reset from "../pages/reset";
 import PostModalWrapper from "../pages/postModalWrapper";
 
 const rootRoute = createRootRoute();
@@ -83,6 +84,12 @@ const signInRoute = createRoute({
   component: SignIn,
 });
 
+const resetPasswordRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "password-reset",
+  component: Reset,
+});
+
 export const router = createRouter({
   routeTree: rootRoute.addChildren([
     rootProtected.addChildren([
@@ -98,5 +105,6 @@ export const router = createRouter({
     ]),
     logInRoute,
     signInRoute,
+    resetPasswordRoute,
   ]),
 });

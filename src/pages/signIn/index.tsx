@@ -12,7 +12,10 @@ const SignIn = (): JSX.Element => {
           <div className="flex w-full py-6 border items-center justify-center gap-2">
             <div>Already have an account?</div>
             <div>
-              <Link to="/login" className="text-blue-500 font-semibold">
+              <Link
+                to="/login"
+                className="text-blue-500 font-semibold hover:text-blue-400"
+              >
                 Log in
               </Link>
             </div>
