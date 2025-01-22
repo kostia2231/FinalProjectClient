@@ -48,10 +48,10 @@ export const useUser = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: async (updatedData: Partial<TUserData["user"]>) => {
+    mutationFn: async (formData: FormData) => {
       const response = await axios.put(
         `http://localhost:3333/${username}/edit`,
-        updatedData,
+        formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -68,12 +68,11 @@ export const useUser = () => {
       queryClient.invalidateQueries({ queryKey: "userData" });
     },
     onError: (error: AxiosError) => {
-      console.error("error editing:", error.response?.data);
+      console.error("Error editing user data:", error.response?.data);
     },
   });
 
   const cachedData = queryClient.getQueryData<TUserData>(["userData"]);
-  queryClient.invalidateQueries({ queryKey: "userData" });
 
   return {
     refetch,
@@ -111,6 +110,7 @@ export const useUserById = ({ userId }: UseUserId) => {
   });
 
   const cachedData = queryClient.getQueryData<TUserData>(["userData", userId]);
+
   return {
     fetchUserById,
     cachedData,

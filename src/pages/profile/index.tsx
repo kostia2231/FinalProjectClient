@@ -109,13 +109,24 @@ const Profile = (): JSX.Element => {
 
   const headerData = isAdmin ? cachedData : userData;
 
+  console.log(userData?.user.profileImg);
+
   return (
     <div>
       <div className="w-[908px]">
         {headerData && (
           <header className="flex gap-20">
             <section>
-              <div className="w-[120px] h-[120px] bg-white border rounded-full" />
+              {userData?.user.profileImg ? (
+                <div className="w-[120px] h-[120px] rounded-full">
+                  <img
+                    className="rounded-full w-fit h-fit object-cover"
+                    src={userData?.user.profileImg}
+                  />
+                </div>
+              ) : (
+                <div className="w-[120px] h-[120px] bg-white border rounded-full" />
+              )}
             </section>
             <section className="grid gap-6 w-full">
               <div className="flex items-center">
