@@ -7,7 +7,7 @@ import Button from "../../ui/Button";
 import ErrorMessage from "../../ui/ErrorMessage";
 
 const FormSignIn = (): JSX.Element => {
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { values, handleChange, handleSubmit, handleBlur, touched, errors } =
     useFormik({
       initialValues: {
