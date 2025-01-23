@@ -6,7 +6,9 @@ const timeAgo = new TimeAgo("en-US");
 import { useNotifications } from "../../utilsQuery/useNotification";
 
 const Notifications = forwardRef<HTMLDivElement>((_, ref): JSX.Element => {
-  const data = useNotifications();
+  const { data, mutation } = useNotifications();
+
+  console.log(data);
 
   return (
     <div
@@ -16,7 +18,7 @@ const Notifications = forwardRef<HTMLDivElement>((_, ref): JSX.Element => {
       <p className="text-2xl font-semibold">Notifications</p>
       <div className="py-6 flex flex-col gap-8">
         {data?.notifications.map((n) => (
-          <div>
+          <div className="flex justify-between" key={n._id}>
             <div className="text-sm flex items-center gap-4">
               <div className="h-8 w-8 rounded-full border" />
               <div>
@@ -25,6 +27,12 @@ const Notifications = forwardRef<HTMLDivElement>((_, ref): JSX.Element => {
                   {timeAgo.format(new Date(n.createdAt ?? new Date()))}
                 </div>
               </div>
+            </div>
+            <div
+              onClick={() => mutation.mutate(n._id)}
+              className="w-4 h-4 p-4 rounded-full hover:bg-gray-100 active:bg-gray-50 flex justify-center items-center cursor-pointer font-light"
+            >
+              x
             </div>
           </div>
         ))}

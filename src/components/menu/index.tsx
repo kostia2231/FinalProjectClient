@@ -31,7 +31,7 @@ const Menu = (): JSX.Element => {
   useUser();
   useUserPosts();
   usePostFollowing();
-  const data = useNotifications();
+  const { data } = useNotifications();
 
   const token = localStorage.getItem("token");
   const [username, setUsername] = useState<string | null>(null);
@@ -50,8 +50,6 @@ const Menu = (): JSX.Element => {
       setIsNotification(false);
     }
   }, [data]);
-
-  console.log(isNotification);
 
   function toggleNotification(): void {
     setIsNotificationOpen((prev) => !prev);
