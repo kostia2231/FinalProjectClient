@@ -5,6 +5,7 @@ interface INotification {
   notifications: {
     _id: string;
     senderUsername: string;
+    postImg?: string;
     type: string;
     createdAt: string;
   }[];

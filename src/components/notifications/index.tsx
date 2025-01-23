@@ -19,18 +19,26 @@ const Notifications = forwardRef<HTMLDivElement>((_, ref): JSX.Element => {
       <div className="py-6 flex flex-col gap-8">
         {data?.notifications.map((n) => (
           <div className="flex justify-between" key={n._id}>
-            <div className="text-sm flex items-center gap-4">
-              <div className="h-8 w-8 rounded-full border" />
-              <div>
-                <p className="font-bold">{n.senderUsername}</p> {n.type}
+            <div className="text-sm flex items-start gap-4">
+              <div className="h-8 w-8 rounded-full border mt-[2px]" />
+              <div className="flex flex-col">
+                <p className="font-bold leading-1">{n.senderUsername}</p>{" "}
+                {n.type}
+                {n.postImg && (
+                  <img
+                    src={n.postImg}
+                    className="w-[80px] h-[80px] my-2 object-cover"
+                  />
+                )}
                 <div className="text-xs text-gray-400">
                   {timeAgo.format(new Date(n.createdAt ?? new Date()))}
                 </div>
               </div>
             </div>
+
             <div
               onClick={() => mutation.mutate(n._id)}
-              className="w-4 h-4 p-4 rounded-full hover:bg-gray-100 active:bg-gray-50 flex justify-center items-center cursor-pointer font-light"
+              className="w-4 h-4 p-4 text-gray-400 rounded-full hover:bg-gray-100 active:bg-gray-50 flex justify-center items-center cursor-pointer font-light"
             >
               x
             </div>
