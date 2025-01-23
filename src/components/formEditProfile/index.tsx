@@ -95,7 +95,7 @@ const FormProfileEdit = (): JSX.Element => {
           <div className="font-medium">{cachedData?.user.username}</div>
           <label
             htmlFor="file-upload"
-            className="cursor-pointer bg-blue-500 text-white px-8 py-2 rounded-xl hover:bg-blue-400 transition-colors ml-auto"
+            className="font-medium cursor-pointer bg-blue-500 text-white px-8 py-2 rounded-xl hover:bg-blue-400 transition-colors ml-auto"
           >
             Choose Image
           </label>
