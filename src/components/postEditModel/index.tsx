@@ -1,5 +1,6 @@
 import { createPortal } from "react-dom";
 import { FC } from "react";
+import { toast } from "sonner";
 import Button from "../../ui/Button";
 import { useDeleteOnePost } from "../../utilsQuery/usePost";
 
@@ -42,6 +43,7 @@ const PostEditModal: FC<IEditModal> = ({
       const postLink = `http://localhost:5173/post/${postId}`;
       try {
         await navigator.clipboard.writeText(postLink);
+        toast.success("Link copied!");
       } catch (error) {
         console.error("Failed to copy link:", error);
       }

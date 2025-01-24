@@ -22,8 +22,8 @@ const Notifications = forwardRef<HTMLDivElement>((_, ref): JSX.Element => {
             <div className="text-sm flex items-start gap-4">
               <div className="h-8 w-8 rounded-full border mt-[2px]" />
               <div className="flex flex-col">
-                <p className="font-bold leading-1">{n.senderUsername}</p>{" "}
-                {n.type}
+                <p className="font-bold leading-1">{n.senderUsername}</p>
+                <p>{n.type}.</p>
                 {n.postImg && (
                   <img
                     src={n.postImg}
