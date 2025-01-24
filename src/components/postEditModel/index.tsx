@@ -34,7 +34,12 @@ const PostEditModal: FC<IEditModal> = ({
 
   function handleDelete() {
     if (postId) {
-      deletePost.mutate(postId);
+      try {
+        deletePost.mutate(postId);
+      } catch (err) {
+        console.error("error deleting post", (err as Error).message);
+        toast.error("Faild to delete. Try again.");
+      }
     }
   }
 
