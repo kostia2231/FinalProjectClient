@@ -170,7 +170,7 @@ const Profile = (): JSX.Element => {
                 </div>
               </div>
               <div>
-                <p>{headerData?.user.bio || "No bio available"}</p>
+                <p>{headerData?.user.bio}</p>
               </div>
               {headerData?.user.website && (
                 <a

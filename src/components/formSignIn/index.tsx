@@ -5,6 +5,7 @@ import { signUpSchema } from "../../schemas/signup";
 import Input from "../../ui/Input";
 import Button from "../../ui/Button";
 import ErrorMessage from "../../ui/ErrorMessage";
+import { toast } from "sonner";
 
 const FormSignIn = (): JSX.Element => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -27,10 +28,13 @@ const FormSignIn = (): JSX.Element => {
               },
             },
           );
-
-          console.log("registration success:", response.data);
+          const { token } = response.data;
+          localStorage.setItem("token", token);
           setErrorMessage(null);
-          alert("registration successful! Proceed to LogIn");
+          toast.success(
+            "Registration successful! Proceeding with logging in...",
+          );
+          window.location.href = "/";
           actions.resetForm();
         } catch (err) {
           if (axios.isAxiosError(err) && err.response) {

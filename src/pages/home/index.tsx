@@ -113,12 +113,21 @@ const Home = () => {
                 </div>
                 <p>{post.caption}</p>
               </div>
-              <div
-                className="text-gray-400 cursor-pointer"
-                onClick={() => toPost(post._id)}
-              >
-                Show all comments ({post.commentsCount})
-              </div>
+              {post.commentsCount > 0 ? (
+                <div
+                  className="text-gray-400 cursor-pointer"
+                  onClick={() => toPost(post._id)}
+                >
+                  Show all comments ({post.commentsCount})
+                </div>
+              ) : (
+                <div
+                  className="text-gray-400 cursor-pointer"
+                  onClick={() => toPost(post._id)}
+                >
+                  Leave a comment
+                </div>
+              )}
               <hr />
             </div>
           ))}
