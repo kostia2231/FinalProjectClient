@@ -115,7 +115,16 @@ const Profile = (): JSX.Element => {
         {headerData && (
           <header className="flex gap-20">
             <section>
-              <div className="w-[120px] h-[120px] bg-white border rounded-full" />
+              {userData?.user.profileImg ? (
+                <div className="w-[120px] h-[120px] rounded-full">
+                  <img
+                    className="rounded-full w-fit h-fit object-cover"
+                    src={userData?.user.profileImg}
+                  />
+                </div>
+              ) : (
+                <div className="w-[120px] h-[120px] bg-white border rounded-full" />
+              )}
             </section>
             <section className="grid gap-6 w-full">
               <div className="flex items-center">
@@ -161,7 +170,7 @@ const Profile = (): JSX.Element => {
                 </div>
               </div>
               <div>
-                <p>{headerData?.user.bio || "No bio available"}</p>
+                <p>{headerData?.user.bio}</p>
               </div>
               {headerData?.user.website && (
                 <a

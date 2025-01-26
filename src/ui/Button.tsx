@@ -7,6 +7,7 @@ export type ButtonVariant =
   | "icon"
   | "link"
   | "edit"
+  | "delete"
   | "profilePrimary";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -30,14 +31,16 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ): JSX.Element => {
     const styles = {
       primary:
-        "bg-blue-500 hover:bg-blue-400 active:bg-blue-300 text-white rounded-xl p-2 font-medium w-full",
+        "bg-blue-500 hover:bg-blue-400 active:bg-blue-300 text-white rounded-xl p-2 font-medium w-full transition-colors",
       profile:
-        "bg-gray-100 text-black py-2 px-9 rounded-lg text-sm font-semibold",
+        "bg-gray-100 text-black py-2 px-9 rounded-lg text-sm font-semibold transition-colors",
       profilePrimary:
-        "bg-blue-500 text-white py-2 px-9 rounded-lg text-sm font-semibold hover:bg-blue-300",
-      link: "h-fit w-fit h-fit font-medium text-blue-400 hover:text-blue-300 ",
-      edit: "w-[300px] p-4 border-t text-black hover:text-opacity-50",
+        "bg-blue-500 text-white py-2 px-9 rounded-lg text-sm font-semibold hover:bg-blue-300 transition-colors",
+      link: "h-fit w-fit h-fit font-medium text-blue-400 hover:text-blue-300 transition-colors",
+      edit: "w-[300px] p-4 border-t text-black hover:text-opacity-50 transition-colors",
       icon: "h-fit w-fit",
+      delete:
+        "bg-red-500 hover:bg-red-400 active:bg-red-300 text-white rounded-xl p-2 font-medium w-full transition-colors",
     };
 
     const buttonClass = clsx(styles[variant], className);

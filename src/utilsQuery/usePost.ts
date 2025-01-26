@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { useState, useEffect, useCallback } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
 import { TPostsData } from "../types/postData";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
@@ -62,6 +63,8 @@ export const useUserPosts = () => {
 };
 
 export const useDeleteOnePost = () => {
+  const { refetch: refetchPosts } = useUserPosts();
+  const router = useRouter();
   const token = localStorage.getItem("token");
   const queryClient = useQueryClient();
 
@@ -80,7 +83,8 @@ export const useDeleteOnePost = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: "userData" });
-      window.location.reload();
+      refetchPosts();
+      router.history.back();
     },
     onError: (error: AxiosError) => {
       console.error("error editing:", error.response?.data);

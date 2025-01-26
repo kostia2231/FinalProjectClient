@@ -4,7 +4,6 @@ import { AxiosError, AxiosResponse } from "axios";
 import Button from "../../ui/Button";
 import Input from "../../ui/Input";
 import { useUser } from "../../utilsQuery/useUser";
-import { TUserData } from "../../types/userData";
 
 interface IProfileEditError extends AxiosError {
   response?: AxiosResponse<{
@@ -13,7 +12,7 @@ interface IProfileEditError extends AxiosError {
 }
 
 const FormProfileEdit = (): JSX.Element => {
-  const { cachedData, mutation } = useUser();
+  const { cachedData, mutation, refetch } = useUser();
   const [message, setMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [initialValues, setInitialValues] = useState({
@@ -21,6 +20,8 @@ const FormProfileEdit = (): JSX.Element => {
     website: "",
     bio: "",
   });
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   useEffect(() => {
     if (cachedData?.user) {
@@ -32,21 +33,39 @@ const FormProfileEdit = (): JSX.Element => {
     }
   }, [cachedData]);
 
+  useEffect(() => {
+    if (image) {
+      const previewUrl = URL.createObjectURL(image);
+      setImagePreview(previewUrl);
+    }
+  }, [image]);
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setImage(file);
+    }
+  };
+
   const { values, handleSubmit, handleChange } = useFormik({
     initialValues,
     enableReinitialize: true,
 
     onSubmit: async (values, actions) => {
-      const updatedData: Partial<TUserData["user"]> = {
-        new_username: values.username,
-        website: values.website,
-        bio: values.bio,
-      };
+      const formData = new FormData();
+      formData.append("new_username", values.username);
+      formData.append("website", values.website);
+      formData.append("bio", values.bio);
 
-      mutation.mutate(updatedData, {
+      if (image) {
+        formData.append("profileImg", image);
+      }
+
+      mutation.mutate(formData, {
         onSuccess() {
           setErrorMessage(null);
           setMessage("Profile updated successfully!");
+          refetch();
         },
         onError: (error: AxiosError) => {
           const typedError = error as IProfileEditError;
@@ -68,6 +87,26 @@ const FormProfileEdit = (): JSX.Element => {
         onSubmit={handleSubmit}
         className="flex flex-col gap-4 w-[600px]"
       >
+        <div className="bg-gray-100 p-4 rounded-[16px] flex items-center gap-4">
+          <img
+            className="rounded-full w-[60px] h-[60px] object-cover"
+            src={imagePreview || cachedData?.user.profileImg}
+          />
+          <div className="font-medium">{cachedData?.user.username}</div>
+          <label
+            htmlFor="file-upload"
+            className="font-medium cursor-pointer bg-blue-500 text-white px-8 py-2 rounded-xl hover:bg-blue-400 transition-colors ml-auto"
+          >
+            Choose Image
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            id="file-upload"
+            className="hidden"
+          />
+        </div>
         <div className="flex flex-col gap-6">
           <div className="grid gap-3">
             <p className="font-medium">Username</p>
@@ -77,7 +116,7 @@ const FormProfileEdit = (): JSX.Element => {
               onChange={handleChange}
               variant="edit"
               type="text"
-            ></Input>
+            />
           </div>
 
           <div className="grid gap-3">
@@ -88,7 +127,7 @@ const FormProfileEdit = (): JSX.Element => {
               onChange={handleChange}
               variant="edit"
               type="text"
-            ></Input>
+            />
           </div>
 
           <div className="grid gap-3">
@@ -99,13 +138,17 @@ const FormProfileEdit = (): JSX.Element => {
               onChange={handleChange}
               variant="edit"
               type="textarea"
-            ></Input>
+            />
           </div>
         </div>
 
-        <div className="w-[300px] mt-6">
+        <div className="flex gap-10 mt-4">
           <Button variant="primary" type="submit">
             {mutation.isPending ? "Updating..." : "Save"}
+          </Button>
+
+          <Button variant="delete" className="bg-red-500">
+            Delete
           </Button>
         </div>
         {message && (

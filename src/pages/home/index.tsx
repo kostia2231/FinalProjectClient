@@ -62,7 +62,7 @@ const Home = () => {
   return (
     <>
       <div>
-        <div className="flex gap-3 pb-3 text-lg border-b mb-3">
+        <div className="flex gap-3 pb-3 text-lg border-b mb-3 w-[500px]">
           <div className="font-medium">All time</div>
           <div className="font-medium text-black/20">Today</div>
         </div>
@@ -113,15 +113,29 @@ const Home = () => {
                 </div>
                 <p>{post.caption}</p>
               </div>
-              <div
-                className="text-gray-400 cursor-pointer"
-                onClick={() => toPost(post._id)}
-              >
-                Show all comments ({post.commentsCount})
-              </div>
+              {post.commentsCount > 0 ? (
+                <div
+                  className="text-gray-400 cursor-pointer"
+                  onClick={() => toPost(post._id)}
+                >
+                  Show all comments ({post.commentsCount})
+                </div>
+              ) : (
+                <div
+                  className="text-gray-400 cursor-pointer"
+                  onClick={() => toPost(post._id)}
+                >
+                  Leave a comment
+                </div>
+              )}
               <hr />
             </div>
           ))}
+          {!postsFollowingData && (
+            <div className="text-center">
+              There is no posts to see or you don't follow anyone yet.
+            </div>
+          )}
         </div>
       </div>
     </>

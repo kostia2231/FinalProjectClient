@@ -18,6 +18,7 @@ import {
 import { useUser } from "../../utilsQuery/useUser";
 import { useUserPosts } from "../../utilsQuery/usePost";
 import { usePostFollowing } from "../../utilsQuery/usePostFollowing";
+import { useNotifications } from "../../utilsQuery/useNotification";
 
 interface DecodedToken extends JwtPayload {
   username: string;
@@ -30,15 +31,25 @@ const Menu = (): JSX.Element => {
   useUser();
   useUserPosts();
   usePostFollowing();
+  const { data } = useNotifications();
 
   const token = localStorage.getItem("token");
   const [username, setUsername] = useState<string | null>(null);
   const [isCreateModalOpen, setCreateModalOpen] = useState<boolean>(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+  const [isNotification, setIsNotification] = useState<boolean>(false);
 
   const notificationsRef = useRef<HTMLDivElement | null>(null);
   const searchRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (data?.notifications.length !== 0) {
+      setIsNotification(true);
+    } else {
+      setIsNotification(false);
+    }
+  }, [data]);
 
   function toggleNotification(): void {
     setIsNotificationOpen((prev) => !prev);
@@ -123,6 +134,7 @@ const Menu = (): JSX.Element => {
           <MenuItem
             name="Notifications"
             icon={<NotificationIcon />}
+            hasNotification={isNotification}
             onClick={toggleNotification}
             className="notification-button"
           />
